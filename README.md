@@ -1,75 +1,64 @@
-# React + TypeScript + Vite
+Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```
+frontend/
+├── public/                 # Static assets (favicon, etc.)
+├── src/
+│   ├── assets/             # Images, fonts, and global CSS
+│   ├── components/         # Global reusable UI components (Buttons, Inputs, Modals)
+│   │   ├── ui/
+│   │   └── form/           # Form validation wrappers (Zod + React Hook Form)
+│   ├── config/             # Environment variables and global configuration
+│   ├── context/            # Global React Contexts (e.g., AuthContext, ThemeContext)
+│   ├── features/           # Feature-based modules (Screaming Architecture)
+│   │   ├── auth/           # Authentication module (login, JWT handling)
+│   │   ├── leads/          # Lead management module (CRUD, list, details)
+│   │   ├── dashboard/      # Role-based dashboard statistics
+│   │   ├── follow-ups/     # Follow-up tasks management
+│   │   └── escalations/    # Human escalation workflow views
+│   ├── hooks/              # Global custom React hooks (e.g., useAuth, useDebounce)
+│   ├── layouts/            # Application layouts (DashboardLayout, AuthLayout)
+│   ├── pages/              # Route entry points mapping to features
+│   ├── routes/             # React Router configuration and protected route wrappers
+│   ├── services/           # Reusable API service layer (Axios instances, interceptors)
+│   ├── types/              # Global TypeScript interfaces and Zod schemas
+│   ├── utils/              # Helper functions, formatters, and constants
+│   ├── App.tsx             # Root application component
+│   └── main.tsx            # Application entry point (ReactDOM render)
+├── .env                    # Environment variables (FRONTEND_URL, API URL)
+├── index.html              # Vite entry HTML
+├── package.json            # Dependencies and scripts
+├── tsconfig.json           # TypeScript configuration
+└── vite.config.ts          # Vite configuration
 
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Backend
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```
+backend/
+├── app/
+│ ├── main.py
+│ ├── api/
+│ │ ├── auth.py
+│ │ ├── users.py
+│ │ ├── leads.py
+│ │ ├── activities.py
+│ │ ├── followups.py
+│ │ ├── escalations.py
+│ │ └── webhooks.py
+│ ├── core/
+│ │ ├── config.py
+│ │ ├── security.py
+│ │ ├── permissions.py
+│ │ └── exceptions.py
+│ ├── schemas/
+│ ├── services/
+│ ├── repositories/
+│ ├── integrations/
+│ │ ├── ai_provider.py
+│ │ └── messaging_provider.py
+│ └── tests/
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 
 ```
