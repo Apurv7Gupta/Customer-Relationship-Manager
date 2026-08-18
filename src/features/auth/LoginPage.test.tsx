@@ -6,20 +6,17 @@ import { LoginPage } from "./LoginPage";
 import { api } from "@/services/api";
 import { useAuth } from "@/context/AuthContext";
 
-// ADDED: Mock the external API service to prevent real network requests during tests
 vi.mock("@/services/api", () => ({
   api: {
     post: vi.fn(),
   },
 }));
 
-// ADDED: Mock the global auth context to verify state changes
-vi.mock("@/hooks/useAuth", () => ({
+vi.mock("@/context/AuthContext", () => ({
   useAuth: vi.fn(),
 }));
 
 const mockNavigate = vi.fn();
-// ADDED: Mock React Router's navigation and location hooks
 vi.mock("react-router-dom", async () => {
   const actual = await vi.importActual("react-router-dom");
   return {
@@ -34,7 +31,7 @@ describe("LoginPage", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (useAuth as any).mockReturnValue({ setAuthData: mockSetAuthData });
+    vi.mocked(useAuth).mockReturnValue({ setAuthData: mockSetAuthData } as any);
   });
 
   const renderComponent = () =>
@@ -59,18 +56,16 @@ describe("LoginPage", () => {
 
     fireEvent.click(submitButton);
 
-    // ADDED: waitFor handles asynchronous form validation (Zod)
     await waitFor(() => {
       expect(screen.getByText(/email is required/i)).toBeInTheDocument();
       expect(screen.getByText(/password is required/i)).toBeInTheDocument();
     });
   });
 
-  // Required Test: Incorrect credentials[cite: 1]
   it("displays global error message on invalid credentials", async () => {
     const user = userEvent.setup();
     (api.post as any).mockRejectedValueOnce({
-      response: { data: { message: "Incorrect email or password" } },
+      response: { data: { detail: "Incorrect email or password" } },
     });
 
     renderComponent();
@@ -91,13 +86,13 @@ describe("LoginPage", () => {
     expect(mockNavigate).not.toHaveBeenCalled();
   });
 
-  // Required Test: Correct credentials[cite: 1]
   it("authenticates and redirects on successful login", async () => {
     const user = userEvent.setup();
     const mockResponse = {
       data: {
         user: { _id: "123", email: "test@example.com", role: "owner" },
-        token: "mock-jwt-token",
+        // Mapped mock token key to match the OAuth2 access_token response
+        access_token: "mock-jwt-token",
       },
     };
     (api.post as any).mockResolvedValueOnce(mockResponse);
@@ -112,16 +107,26 @@ describe("LoginPage", () => {
     await user.click(screen.getByRole("button", { name: /sign in/i }));
 
     await waitFor(() => {
-      expect(api.post).toHaveBeenCalledWith("/api/auth/login", {
-        email: "test@example.com",
-        password: "correctpassword",
-      });
+      // Assert that the request contains the form-urlencoded headers
+      expect(api.post).toHaveBeenCalledWith(
+        "/api/auth/login",
+        expect.any(URLSearchParams),
+        {
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+        },
+      );
     });
 
-    // ADDED: Verify global auth state is updated with backend payload
+    // Verify the OAuth2 specific payload fields mapping email to username
+    const formDataArg = vi.mocked(api.post).mock.calls[0][1] as URLSearchParams;
+    expect(formDataArg.get("username")).toBe("test@example.com");
+    expect(formDataArg.get("password")).toBe("correctpassword");
+
     expect(mockSetAuthData).toHaveBeenCalledWith({
       user: mockResponse.data.user,
-      token: mockResponse.data.token,
+      token: mockResponse.data.access_token,
     });
     expect(mockNavigate).toHaveBeenCalledWith("/dashboard", { replace: true });
   });

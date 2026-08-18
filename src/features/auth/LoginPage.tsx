@@ -36,13 +36,11 @@ export const LoginPage: React.FC = () => {
   const onSubmit = async (data: LoginFormData) => {
     setGlobalError(null);
     try {
-      // CHANGED: Converted JSON payload to URLSearchParams for OAuth2 form-urlencoded requirement
       const formData = new URLSearchParams();
-      // CHANGED: The backend OAuth2 form strictly expects the key 'username', so we map the email to it
       formData.append("username", data.email);
       formData.append("password", data.password);
 
-      // CHANGED: Passed formData and explicitly set the Content-Type header
+      // Passed formData and explicitly set the Content-Type header
       const response = await api.post("/api/auth/login", formData, {
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",

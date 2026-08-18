@@ -1,7 +1,6 @@
 import React from "react";
 import { useAuth } from "@/context/AuthContext";
 
-// CHANGED: Implemented actual dashboard component to resolve the route redirect loop from Phase 2
 export const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
 
@@ -22,7 +21,7 @@ export const Dashboard: React.FC = () => {
         </header>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {/* CHANGED: Scaffolding cards for required visual summary sections[cite: 1] */}
+          {/* Scaffolding cards (visual summary sections) */}
           <DashboardCard title="Total Leads" value="0" />
           <DashboardCard title="New Leads" value="0" />
           <DashboardCard title="Qualified Leads" value="0" />
