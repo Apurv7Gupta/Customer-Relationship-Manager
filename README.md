@@ -1,4 +1,4 @@
-Frontend
+### Frontend
 
 ```
 frontend/
@@ -33,7 +33,7 @@ frontend/
 
 ```
 
-Backend
+### Backend
 
 ```
 backend/
@@ -61,4 +61,24 @@ backend/
 │ └── tests/
 
 
+```
+
+### Auth Architechture
+
+```
+                    BACKEND
+              ┌─────────────────┐
+Frontend ────►│ /token          │
+ username     │                 │
+ password ───►│ verify password │
+              │       ↓         │
+              │   create JWT    │
+              └───────┬─────────┘
+                      │
+                 JWT access token
+                      │
+                      ▼
+Frontend ───────────────────────► Protected API
+             Authorization:
+             Bearer <JWT>
 ```

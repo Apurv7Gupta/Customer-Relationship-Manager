@@ -1,11 +1,11 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { LoginPage } from "../features/auth/LoginPage";
 import { ProtectedRoute } from "./protectedRoutes";
 import { UserRole } from "../types/auth";
+import { LoginPage } from "../features/auth/LoginPage";
+import { Dashboard } from "../features/dashboard/Dashboard";
 
 // Placeholder components
-const Dashboard = () => <div>Dashboard</div>;
 const LeadList = () => <div>Leads</div>;
 const UserManagement = () => <div>User Management</div>;
 const Unauthorized = () => <div>Unauthorized Access</div>;

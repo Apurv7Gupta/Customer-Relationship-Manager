@@ -4,12 +4,15 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from app.core.config import settings
 from app.api import auth
 from fastapi.middleware.cors import CORSMiddleware
+from app.api import auth, leads
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     app.mongodb_client = AsyncIOMotorClient(settings.MONGODB_URI)
     app.mongodb = app.mongodb_client[settings.DATABASE_NAME]
+    await app.mongodb.leads.create_index([("assigned_to", 1), ("status", 1)])
+    await app.mongodb.leads.create_index([("phone", 1)], unique=True)
     yield
     app.mongodb_client.close()
 
@@ -25,3 +28,4 @@ app.add_middleware(
 )
 
 app.include_router(auth.router, prefix="/api/auth", tags=["auth"])
+app.include_router(leads.router, prefix="/api/leads", tags=["leads"])
