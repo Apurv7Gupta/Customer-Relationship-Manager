@@ -3,12 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-// Assumes a pre-configured Axios or Fetch instance for the "reusable API service layer"
 import { api } from "@/services/api";
-// Assumes an auth context provider exists to manage global user state and JWT
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 
-// Zod schema for field-level validation
 const loginSchema = z.object({
   email: z
     .string()
@@ -25,7 +22,6 @@ export const LoginPage: React.FC = () => {
   const { setAuthData } = useAuth();
   const [globalError, setGlobalError] = useState<string | null>(null);
 
-  // Determine where to redirect after successful login
   const from = location.state?.from?.pathname || "/dashboard";
 
   const {
@@ -34,30 +30,33 @@ export const LoginPage: React.FC = () => {
     formState: { errors, isSubmitting },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   });
 
   const onSubmit = async (data: LoginFormData) => {
     setGlobalError(null);
     try {
-      // Targets the specified /api/auth/login endpoint
-      const response = await api.post("/api/auth/login", data);
+      // CHANGED: Converted JSON payload to URLSearchParams for OAuth2 form-urlencoded requirement
+      const formData = new URLSearchParams();
+      // CHANGED: The backend OAuth2 form strictly expects the key 'username', so we map the email to it
+      formData.append("username", data.email);
+      formData.append("password", data.password);
 
-      // Store JWT token securely (implementation depends on your auth strategy, typically HttpOnly cookies or memory/context)
-      setAuthData({
-        user: response.data.user,
-        token: response.data.token,
+      // CHANGED: Passed formData and explicitly set the Content-Type header
+      const response = await api.post("/api/auth/login", formData, {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       });
 
-      // Redirect to intended page or dashboard
+      setAuthData({
+        user: response.data.user,
+        token: response.data.access_token,
+      });
       navigate(from, { replace: true });
     } catch (error: any) {
-      // Provide understandable error messages rather than raw HTTP statuses
       const errorMessage =
-        error.response?.data?.message ||
+        error.response?.data?.detail ||
         "Invalid email or password. Please try again.";
       setGlobalError(errorMessage);
     }
