@@ -4,6 +4,7 @@ import jwt
 from app.core.config import settings
 from app.schemas.user import UserRole, UserOut
 from typing import List
+from bson import ObjectId
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
@@ -30,7 +31,7 @@ async def get_current_user(
     except jwt.PyJWTError:
         raise credentials_exception
 
-    user = await db.users.find_one({"_id": user_id})
+    user = await db.users.find_one({"_id": ObjectId(user_id)})
     if user is None:
         raise credentials_exception
 

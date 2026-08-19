@@ -1,4 +1,4 @@
-import React from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 
 export const Dashboard: React.FC = () => {
@@ -27,6 +27,14 @@ export const Dashboard: React.FC = () => {
           <DashboardCard title="Qualified Leads" value="0" />
           <DashboardCard title="Escalated" value="0" />
         </div>
+      </div>
+      <div className="mt-10 flex justify-center">
+        <Link
+          to="/leads"
+          className="bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700"
+        >
+          View Leads
+        </Link>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import jwt
 from app.core.config import settings
 
 
-# CHANGED: Removed pwd_context and implemented direct bcrypt hashing
+# direct bcrypt hashing
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     try:
         return bcrypt.checkpw(
@@ -14,7 +14,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
         return False
 
 
-# CHANGED: Implemented direct bcrypt generation
+# direct bcrypt generation
 def get_password_hash(password: str) -> str:
     pwd_bytes = password.encode("utf-8")
     salt = bcrypt.gensalt()
