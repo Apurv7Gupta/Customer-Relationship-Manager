@@ -1,4 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
+import { BrowserRouter } from "react-router-dom";
 import { vi, describe, it, expect, beforeEach } from "vitest";
 import { Dashboard } from "./Dashboard";
 import { useAuth } from "@/context/AuthContext";
@@ -19,7 +20,11 @@ describe("Dashboard", () => {
   });
 
   it("renders user greeting and dashboard cards", () => {
-    render(<Dashboard />);
+    render(
+      <BrowserRouter>
+        <Dashboard />
+      </BrowserRouter>,
+    );
 
     expect(
       screen.getByText(/Welcome back, owner@example.com/i),
@@ -29,7 +34,11 @@ describe("Dashboard", () => {
   });
 
   it("calls logout function when logout button is clicked", () => {
-    render(<Dashboard />);
+    render(
+      <BrowserRouter>
+        <Dashboard />
+      </BrowserRouter>,
+    );
 
     const logoutBtn = screen.getByRole("button", { name: /logout/i });
     fireEvent.click(logoutBtn);
