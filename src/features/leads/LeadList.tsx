@@ -15,13 +15,20 @@ export const LeadList: React.FC = () => {
 
   const page = parseInt(searchParams.get("page") || "1", 10);
   const status = searchParams.get("status") || "";
+  const search = searchParams.get("search") || ""; // Extract search state from URL
 
   const fetchLeads = async () => {
     setLoading(true);
     setError(null);
     try {
+      // Pass search parameter to the API request to implement functional search
       const response = await api.get<PaginatedResponse<Lead>>("/api/leads", {
-        params: { page, page_size: 10, status: status || undefined },
+        params: {
+          page,
+          page_size: 10,
+          status: status || undefined,
+          search: search || undefined,
+        },
       });
       setData(response.data);
     } catch (err: any) {
@@ -33,16 +40,20 @@ export const LeadList: React.FC = () => {
 
   useEffect(() => {
     fetchLeads();
-  }, [page, status]);
+  }, [page, status, search]);
 
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSearchParams({ page: "1", status: e.target.value });
+    setSearchParams({ page: "1", status: e.target.value, search });
+  };
+
+  // Handler for text search to update URL params
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchParams({ page: "1", status, search: e.target.value });
   };
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        {/* CHANGED: Grouped the Back button and Title in a flex container */}
         <div className="flex items-center space-x-4">
           <button
             type="button"
@@ -63,20 +74,34 @@ export const LeadList: React.FC = () => {
         )}
       </div>
 
-      <div className="mb-4 flex gap-4 bg-white p-4 rounded shadow">
-        <div>
+      <div className="mb-4 flex gap-4 bg-white p-4 rounded shadow items-end">
+        {/* text search input */}
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700">
+            Search Leads
+          </label>
+          <input
+            type="text"
+            placeholder="Search by name, email, or phone..."
+            value={search}
+            onChange={handleSearchChange}
+            className="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
+          />
+        </div>
+        <div className="w-48">
           <label className="block text-sm font-medium text-gray-700">
             Status Filter
           </label>
           <select
             value={status}
             onChange={handleFilterChange}
-            className="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2 border"
           >
             <option value="">All Statuses</option>
             <option value="new">New</option>
             <option value="qualified">Qualified</option>
             <option value="won">Won</option>
+            <option value="lost">Lost</option>
           </select>
         </div>
       </div>
@@ -136,7 +161,7 @@ export const LeadList: React.FC = () => {
             <button
               disabled={page <= 1}
               onClick={() =>
-                setSearchParams({ page: (page - 1).toString(), status })
+                setSearchParams({ page: (page - 1).toString(), status, search })
               }
               className="px-3 py-1 border rounded text-sm disabled:opacity-50"
             >
@@ -148,7 +173,7 @@ export const LeadList: React.FC = () => {
             <button
               disabled={page >= data.meta.total_pages}
               onClick={() =>
-                setSearchParams({ page: (page + 1).toString(), status })
+                setSearchParams({ page: (page + 1).toString(), status, search })
               }
               className="px-3 py-1 border rounded text-sm disabled:opacity-50"
             >

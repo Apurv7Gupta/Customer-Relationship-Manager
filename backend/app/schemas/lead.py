@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import Enum
 
 
-# CHANGED: Enforced strict required statuses mapping to core modules[cite: 1]
+# strict required statuses mapping to core modules
 class LeadStatus(str, Enum):
     NEW = "new"
     CONTACTED = "contacted"

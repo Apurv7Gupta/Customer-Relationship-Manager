@@ -17,7 +17,7 @@ async def seed_sales_exec():
     sales_exec = {
         "email": "sales_exec@example.com",
         "hashed_password": get_password_hash("Exec123!"),
-        "role": "sales_exec",
+        "role": "sales_executive",
         "is_active": True,
     }
 
