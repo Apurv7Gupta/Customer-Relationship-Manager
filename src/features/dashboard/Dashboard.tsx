@@ -1,8 +1,40 @@
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { api } from "@/services/api";
 
 export const Dashboard: React.FC = () => {
   const { user, logout } = useAuth();
+  const [stats, setStats] = useState({
+    total: 0,
+    new: 0,
+    qualified: 0,
+    escalated: 0,
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const [leadsRes, newRes, qualRes, escRes] = await Promise.all([
+          api.get("/api/leads", { params: { page_size: 1 } }),
+          api.get("/api/leads", { params: { status: "new", page_size: 1 } }),
+          api.get("/api/leads", {
+            params: { status: "qualified", page_size: 1 },
+          }),
+          api.get("/api/escalations", { params: { page_size: 1 } }),
+        ]);
+        setStats({
+          total: leadsRes.data?.meta?.total || 0,
+          new: newRes.data?.meta?.total || 0,
+          qualified: qualRes.data?.meta?.total || 0,
+          escalated: escRes.data?.meta?.total || 0,
+        });
+      } catch (error) {
+        console.error("Failed to fetch dashboard stats", error);
+      }
+    };
+    fetchStats();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
@@ -21,20 +53,38 @@ export const Dashboard: React.FC = () => {
         </header>
 
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {/* Scaffolding cards (visual summary sections) */}
-          <DashboardCard title="Total Leads" value="0" />
-          <DashboardCard title="New Leads" value="0" />
-          <DashboardCard title="Qualified Leads" value="0" />
-          <DashboardCard title="Escalated" value="0" />
+          <Link to="/leads" className="block h-full">
+            <DashboardCard title="Total Leads" value={stats.total} />
+          </Link>
+          <Link to="/leads?page=1&status=new&search=" className="block h-full">
+            <DashboardCard title="New Leads" value={stats.new} />
+          </Link>
+          <Link
+            to="/leads?page=1&status=qualified&search="
+            className="block h-full"
+          >
+            <DashboardCard title="Qualified Leads" value={stats.qualified} />
+          </Link>
+          <Link to="/escalations" className="block h-full">
+            <DashboardCard title="Escalated" value={stats.escalated} />
+          </Link>
         </div>
       </div>
-      <div className="mt-10 flex justify-center">
+      <div className="mt-10 flex flex-col items-center gap-4">
         <Link
           to="/leads"
-          className="bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700"
+          className="w-48 text-center bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700"
         >
-          View Leads
+          View All Leads
         </Link>
+        {user?.role === "owner" && (
+          <Link
+            to="/users"
+            className="w-48 text-center bg-indigo-600 text-white px-4 py-2 rounded shadow hover:bg-indigo-700"
+          >
+            Manage Users
+          </Link>
+        )}
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import * as z from "zod";
 import { api } from "@/services/api";
 import { UserRole } from "@/types/auth";
 import type { User } from "@/types/auth";
+import { Link } from "react-router-dom";
 
 const userSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -71,6 +72,14 @@ export const UserManagement: React.FC = () => {
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen">
+      <div className="max-w-6xl mx-auto mb-6">
+        <Link
+          to="/dashboard"
+          className="text-sm font-medium text-indigo-600 hover:text-indigo-800"
+        >
+          &larr; Back to dashboard
+        </Link>
+      </div>
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* User Creation Form */}
         <div className="md:col-span-1">
