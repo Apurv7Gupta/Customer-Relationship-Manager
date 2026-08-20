@@ -7,6 +7,8 @@ import { Dashboard } from "../features/dashboard/Dashboard";
 import { LeadList } from "../features/leads/LeadList";
 import { LeadForm } from "../features/leads/LeadForm";
 import { LeadDetail } from "../features/leads/LeadDetail";
+import { EscalationList } from "../features/escalations/EscalationList";
+import { EscalationDetail } from "../features/escalations/EscalationDetail";
 
 const UserManagement = () => <div>User Management</div>;
 const Unauthorized = () => <div>Unauthorized Access</div>;
@@ -34,6 +36,17 @@ export const AppRoutes: React.FC = () => {
           <Route path="/users" element={<UserManagement />} />
           <Route path="/leads/new" element={<LeadForm />} />
           <Route path="/leads/:id/edit" element={<LeadForm />} />
+        </Route>
+
+        <Route
+          element={
+            <ProtectedRoute
+              allowedRoles={[UserRole.OWNER, UserRole.SALES_MANAGER]}
+            />
+          }
+        >
+          <Route path="/escalations" element={<EscalationList />} />
+          <Route path="/escalations/:id" element={<EscalationDetail />} />
         </Route>
 
         {/* Fallback */}

@@ -5,7 +5,16 @@ from app.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 
 # CHANGED: Imported users, activities, and followups routers
-from app.api import auth, leads, users, activities, followups
+from app.api import (
+    activities,
+    auth,
+    escalations,
+    followups,
+    leads,
+    messages,
+    users,
+    webhooks,
+)
 
 
 @asynccontextmanager
@@ -17,6 +26,11 @@ async def lifespan(app: FastAPI):
     await app.mongodb.activities.create_index([("lead_id", 1), ("created_at", -1)])
     await app.mongodb.follow_ups.create_index([("assigned_to", 1), ("due_at", 1)])
     await app.mongodb.follow_ups.create_index([("status", 1), ("due_at", 1)])
+    await app.mongodb.messages.create_index([("lead_id", 1)])
+    await app.mongodb.messages.create_index([("created_at", -1)])
+    await app.mongodb.messages.create_index([("provider_message_id", 1)], unique=True)
+    await app.mongodb.escalations.create_index([("status", 1), ("priority", 1)])
+    await app.mongodb.escalations.create_index([("assigned_to", 1), ("status", 1)])
     yield
     app.mongodb_client.close()
 
@@ -25,7 +39,7 @@ app = FastAPI(title="AI-Assisted Lead Management CRM", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,3 +50,6 @@ app.include_router(leads.router, prefix="/api/leads", tags=["leads"])
 app.include_router(users.router, prefix="/api/users", tags=["users"])
 app.include_router(activities.router, prefix="/api/activities", tags=["activities"])
 app.include_router(followups.router, prefix="/api/followups", tags=["follow-ups"])
+app.include_router(webhooks.router, prefix="/api/webhooks", tags=["webhooks"])
+app.include_router(escalations.router, prefix="/api/escalations", tags=["escalations"])
+app.include_router(messages.router, prefix="/api/messages", tags=["messages"])

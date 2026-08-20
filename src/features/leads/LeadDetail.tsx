@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { api } from "@/services/api";
-import type { Lead, Activity, FollowUp, PaginatedResponse } from "@/types/crm";
+import type {
+  Lead,
+  Activity,
+  FollowUp,
+  Message,
+  PaginatedResponse,
+} from "@/types/crm";
 import { useAuth } from "@/context/AuthContext";
 import { UserRole, type User } from "@/types/auth";
 
@@ -10,8 +16,11 @@ export const LeadDetail: React.FC = () => {
   const [lead, setLead] = useState<Lead | null>(null);
   const [activities, setActivities] = useState<Activity[]>([]);
   const [followups, setFollowups] = useState<FollowUp[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [conversationError, setConversationError] = useState<string | null>(null);
+  const [approvingMessageId, setApprovingMessageId] = useState<string | null>(null);
 
   const [newStatus, setNewStatus] = useState<string>("");
   const [newPriority, setNewPriority] = useState<string>("");
@@ -43,6 +52,19 @@ export const LeadDetail: React.FC = () => {
       console.error(error);
     } finally {
       setLoading(false);
+    }
+
+    try {
+      const messageRes = await api.get<PaginatedResponse<Message>>(
+        "/api/messages",
+        { params: { lead_id: id, page_size: 100 } },
+      );
+      setMessages(messageRes.data.data);
+      setConversationError(null);
+    } catch {
+      setConversationError(
+        "The conversation timeline is unavailable. Lead details remain available.",
+      );
     }
   };
 
@@ -102,6 +124,26 @@ export const LeadDetail: React.FC = () => {
     setFollowUpDesc("");
     setFollowUpDate("");
     fetchLeadData();
+  };
+
+  const approveReplyDraft = async (messageId: string) => {
+    setApprovingMessageId(messageId);
+    setConversationError(null);
+    try {
+      const response = await api.patch<Message>(`/api/messages/${messageId}`, {
+        approved: true,
+      });
+      setMessages((currentMessages) =>
+        currentMessages.map((message) =>
+          message._id === messageId ? response.data : message,
+        ),
+      );
+    } catch (error) {
+      console.error(error);
+      setConversationError("Unable to approve the reply draft. Please try again.");
+    } finally {
+      setApprovingMessageId(null);
+    }
   };
 
   if (loading) return <div className="p-8">Loading details...</div>;
@@ -260,6 +302,93 @@ export const LeadDetail: React.FC = () => {
               ))
             )}
           </div>
+        </div>
+
+        <div className="bg-white p-6 rounded shadow">
+          <h3 className="text-xl font-bold mb-1">Conversation & AI Reply Drafts</h3>
+          <p className="mb-4 text-sm text-gray-500">
+            AI suggestions are drafts only. Approval marks a reply ready to send; it does not send it.
+          </p>
+          {conversationError && (
+            <div className="mb-4 rounded bg-red-50 p-3 text-sm text-red-700" role="alert">
+              {conversationError}
+            </div>
+          )}
+          {messages.length === 0 ? (
+            <p className="text-sm text-gray-500">No customer messages have been received.</p>
+          ) : (
+            <div className="space-y-4">
+              {messages.map((message) => (
+                <article key={message._id} className="rounded border border-gray-200 p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-2">
+                    <p className="text-sm font-semibold capitalize text-gray-900">
+                      {message.direction} message
+                    </p>
+                    <time className="text-xs text-gray-500">
+                      {new Date(message.received_at).toLocaleString()}
+                    </time>
+                  </div>
+                  <p className="mt-2 whitespace-pre-wrap text-sm text-gray-700">
+                    {message.message}
+                  </p>
+
+                  {message.ai_analysis && (
+                    <div className="mt-4 rounded bg-indigo-50 p-3 text-sm text-indigo-950">
+                      <p>
+                        <span className="font-semibold">AI classification:</span>{" "}
+                        {message.ai_analysis.intent} · {message.ai_analysis.sentiment} · {" "}
+                        {Math.round(message.ai_analysis.confidence * 100)}% confidence
+                      </p>
+                      <p className="mt-1">{message.ai_analysis.summary}</p>
+                      {message.ai_analysis.requires_human_escalation && (
+                        <p className="mt-1 font-medium">
+                          Human review required: {message.ai_analysis.escalation_reason}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {message.reply_draft && (
+                    <div className="mt-4">
+                      <label
+                        htmlFor={`reply-draft-${message._id}`}
+                        className="block text-sm font-medium text-gray-700"
+                      >
+                        Suggested reply draft
+                      </label>
+                      <textarea
+                        id={`reply-draft-${message._id}`}
+                        value={message.reply_draft}
+                        readOnly
+                        rows={3}
+                        className="mt-1 w-full resize-none rounded border border-gray-300 bg-gray-50 p-2 text-sm text-gray-800"
+                      />
+                      {message.reply_status === "approved" ? (
+                        <p className="mt-2 text-sm font-medium text-green-700">
+                          Approved and ready to send
+                          {message.reply_approved_at
+                            ? ` on ${new Date(message.reply_approved_at).toLocaleString()}`
+                            : ""}
+                          .
+                        </p>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => void approveReplyDraft(message._id)}
+                          disabled={approvingMessageId === message._id}
+                          className="mt-2 rounded bg-indigo-600 px-3 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                        >
+                          {approvingMessageId === message._id
+                            ? "Approving..."
+                            : "Approve reply draft"}
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
