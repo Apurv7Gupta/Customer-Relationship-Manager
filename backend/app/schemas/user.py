@@ -14,6 +14,12 @@ class UserLogin(BaseModel):
     password: str
 
 
+class UserCreate(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=8)
+    role: UserRole
+
+
 class UserOut(BaseModel):
     id: str = Field(alias="_id")
     email: EmailStr

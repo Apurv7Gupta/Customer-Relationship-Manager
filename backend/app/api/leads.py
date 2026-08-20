@@ -133,7 +133,7 @@ async def update_lead(
             status_code=403, detail="Not authorized to update this lead"
         )
 
-    update_data = lead_update.model_dump(exclude_unset=True)
+    update_data = lead_update.model_dump(exclude_unset=True, mode="json")
     if not update_data:
         raise HTTPException(status_code=400, detail="No fields provided for update")
 
@@ -144,6 +144,24 @@ async def update_lead(
             )
         if update_data["assigned_to"] == "":
             update_data["assigned_to"] = None
+        if update_data["assigned_to"] is not None:
+            assignee_id = update_data["assigned_to"]
+            if not ObjectId.is_valid(assignee_id):
+                raise HTTPException(status_code=400, detail="Invalid assignee")
+
+            assignee = await db.users.find_one(
+                {"_id": ObjectId(assignee_id), "is_active": True}
+            )
+            if not assignee:
+                raise HTTPException(status_code=400, detail="Invalid assignee")
+            if (
+                current_user.get("role") == UserRole.SALES_MANAGER.value
+                and assignee.get("role") != UserRole.SALES_EXECUTIVE.value
+            ):
+                raise HTTPException(
+                    status_code=400,
+                    detail="Sales managers can assign leads only to sales executives",
+                )
 
     now = datetime.now(timezone.utc)
     update_data["updated_at"] = now

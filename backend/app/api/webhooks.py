@@ -1,9 +1,7 @@
 from datetime import datetime, timezone
-
 from bson import ObjectId
 from fastapi import APIRouter, Depends, HTTPException, status
 from pymongo.errors import DuplicateKeyError
-
 from app.core.permissions import get_database
 from app.integrations.ai_provider import MockAIProvider
 from app.schemas.activity import ActivityType

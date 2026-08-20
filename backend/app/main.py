@@ -4,7 +4,6 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from app.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 
-# CHANGED: Imported users, activities, and followups routers
 from app.api import (
     activities,
     auth,

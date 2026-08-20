@@ -9,8 +9,8 @@ import { LeadForm } from "../features/leads/LeadForm";
 import { LeadDetail } from "../features/leads/LeadDetail";
 import { EscalationList } from "../features/escalations/EscalationList";
 import { EscalationDetail } from "../features/escalations/EscalationDetail";
+import { UserManagement } from "../features/users/UserManagement";
 
-const UserManagement = () => <div>User Management</div>;
 const Unauthorized = () => <div>Unauthorized Access</div>;
 
 export const AppRoutes: React.FC = () => {
