@@ -1,11 +1,18 @@
-from fastapi import APIRouter, Depends, Query, HTTPException, status
-from typing import Optional
 from datetime import datetime, timezone
+from typing import Optional
 from bson import ObjectId
-from app.schemas.lead import LeadCreate, LeadOut, LeadUpdate, LeadStatus, LeadPriority
-from app.core.permissions import get_current_user, get_database, RoleChecker
-from app.schemas.user import UserRole
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+
+from app.core.permissions import RoleChecker, get_current_user, get_database
 from app.schemas.activity import ActivityType
+from app.schemas.lead import (
+    LeadCreate,
+    LeadOut,
+    LeadPriority,
+    LeadStatus,
+    LeadUpdate,
+)
+from app.schemas.user import UserRole
 
 router = APIRouter()
 
@@ -183,11 +190,21 @@ async def update_lead(
     if "assigned_to" in update_data and update_data["assigned_to"] != existing_lead.get(
         "assigned_to"
     ):
+        # CHANGED: Look up assignee details in the users collection to log email/name instead of raw ObjectId
+        assigned_label = "Unassigned"
+        if update_data["assigned_to"]:
+            target_user = await db.users.find_one(
+                {"_id": ObjectId(update_data["assigned_to"])}
+            )
+            assigned_label = (
+                target_user.get("email") if target_user else update_data["assigned_to"]
+            )
+
         activities_to_insert.append(
             {
                 "lead_id": lead_id,
                 "activity_type": ActivityType.ASSIGNMENT_CHANGE.value,
-                "description": f"Lead assigned to {update_data['assigned_to'] or 'Unassigned'}",
+                "description": f"Lead assigned to {assigned_label}",
                 "created_by": str(current_user["_id"]),
                 "created_at": now,
             }

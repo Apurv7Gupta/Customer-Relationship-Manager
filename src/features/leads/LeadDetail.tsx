@@ -19,11 +19,14 @@ export const LeadDetail: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [conversationError, setConversationError] = useState<string | null>(null);
-  const [approvingMessageId, setApprovingMessageId] = useState<string | null>(null);
+  const [conversationError, setConversationError] = useState<string | null>(
+    null,
+  );
+  const [approvingMessageId, setApprovingMessageId] = useState<string | null>(
+    null,
+  );
 
   const [newStatus, setNewStatus] = useState<string>("");
-  const [newPriority, setNewPriority] = useState<string>("");
   const [newAssignee, setNewAssignee] = useState<string>("");
   const [followUpDesc, setFollowUpDesc] = useState<string>("");
   const [followUpDate, setFollowUpDate] = useState<string>("");
@@ -44,7 +47,6 @@ export const LeadDetail: React.FC = () => {
       ]);
       setLead(leadRes.data);
       setNewStatus(leadRes.data.status);
-      setNewPriority(leadRes.data.priority);
       setNewAssignee(leadRes.data.assigned_to || "");
       setActivities(actRes.data.data);
       setFollowups(folRes.data.data.filter((f) => f.lead_id === id));
@@ -86,11 +88,6 @@ export const LeadDetail: React.FC = () => {
 
   const updateStatus = async () => {
     await api.patch(`/api/leads/${id}`, { status: newStatus });
-    fetchLeadData();
-  };
-
-  const updatePriority = async () => {
-    await api.patch(`/api/leads/${id}`, { priority: newPriority });
     fetchLeadData();
   };
 
@@ -140,7 +137,9 @@ export const LeadDetail: React.FC = () => {
       );
     } catch (error) {
       console.error(error);
-      setConversationError("Unable to approve the reply draft. Please try again.");
+      setConversationError(
+        "Unable to approve the reply draft. Please try again.",
+      );
     } finally {
       setApprovingMessageId(null);
     }
@@ -186,10 +185,7 @@ export const LeadDetail: React.FC = () => {
               <span className="font-semibold">Current Status:</span>{" "}
               <span className="capitalize">{lead.status}</span>
             </p>
-            <p>
-              <span className="font-semibold">Current Priority:</span>{" "}
-              <span className="capitalize">{lead.priority}</span>
-            </p>
+            {/* CHANGED: Priority information removed */}
             <p>
               <span className="font-semibold">Source:</span> {lead.source}
             </p>
@@ -197,7 +193,8 @@ export const LeadDetail: React.FC = () => {
 
           <hr className="my-4" />
 
-          <div className="grid grid-cols-2 gap-4">
+          {/* CHANGED: Priority select controls removed */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700">
                 Change Status
@@ -219,30 +216,6 @@ export const LeadDetail: React.FC = () => {
                 </select>
                 <button
                   onClick={updateStatus}
-                  className="bg-indigo-600 text-white px-3 rounded-r hover:bg-indigo-700 text-sm"
-                >
-                  Update
-                </button>
-              </div>
-            </div>
-
-            {/* Priority control */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Change Priority
-              </label>
-              <div className="flex mt-1">
-                <select
-                  value={newPriority}
-                  onChange={(e) => setNewPriority(e.target.value)}
-                  className="block w-full rounded-l border-gray-300 shadow-sm border p-2 text-sm"
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
-                <button
-                  onClick={updatePriority}
                   className="bg-indigo-600 text-white px-3 rounded-r hover:bg-indigo-700 text-sm"
                 >
                   Update
@@ -305,21 +278,32 @@ export const LeadDetail: React.FC = () => {
         </div>
 
         <div className="bg-white p-6 rounded shadow">
-          <h3 className="text-xl font-bold mb-1">Conversation & AI Reply Drafts</h3>
+          <h3 className="text-xl font-bold mb-1">
+            Conversation & AI Reply Drafts
+          </h3>
           <p className="mb-4 text-sm text-gray-500">
-            AI suggestions are drafts only. Approval marks a reply ready to send; it does not send it.
+            AI suggestions are drafts only. Approval marks a reply ready to
+            send; it does not send it.
           </p>
           {conversationError && (
-            <div className="mb-4 rounded bg-red-50 p-3 text-sm text-red-700" role="alert">
+            <div
+              className="mb-4 rounded bg-red-50 p-3 text-sm text-red-700"
+              role="alert"
+            >
               {conversationError}
             </div>
           )}
           {messages.length === 0 ? (
-            <p className="text-sm text-gray-500">No customer messages have been received.</p>
+            <p className="text-sm text-gray-500">
+              No customer messages have been received.
+            </p>
           ) : (
             <div className="space-y-4">
               {messages.map((message) => (
-                <article key={message._id} className="rounded border border-gray-200 p-4">
+                <article
+                  key={message._id}
+                  className="rounded border border-gray-200 p-4"
+                >
                   <div className="flex flex-wrap items-start justify-between gap-2">
                     <p className="text-sm font-semibold capitalize text-gray-900">
                       {message.direction} message
@@ -335,14 +319,19 @@ export const LeadDetail: React.FC = () => {
                   {message.ai_analysis && (
                     <div className="mt-4 rounded bg-indigo-50 p-3 text-sm text-indigo-950">
                       <p>
-                        <span className="font-semibold">AI classification:</span>{" "}
-                        {message.ai_analysis.intent} · {message.ai_analysis.sentiment} · {" "}
-                        {Math.round(message.ai_analysis.confidence * 100)}% confidence
+                        <span className="font-semibold">
+                          AI classification:
+                        </span>{" "}
+                        {message.ai_analysis.intent} ·{" "}
+                        {message.ai_analysis.sentiment} ·{" "}
+                        {Math.round(message.ai_analysis.confidence * 100)}%
+                        confidence
                       </p>
                       <p className="mt-1">{message.ai_analysis.summary}</p>
                       {message.ai_analysis.requires_human_escalation && (
                         <p className="mt-1 font-medium">
-                          Human review required: {message.ai_analysis.escalation_reason}
+                          Human review required:{" "}
+                          {message.ai_analysis.escalation_reason}
                         </p>
                       )}
                     </div>
