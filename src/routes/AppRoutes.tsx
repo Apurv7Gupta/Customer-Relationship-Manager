@@ -10,6 +10,7 @@ import { LeadDetail } from "../features/leads/LeadDetail";
 import { EscalationList } from "../features/escalations/EscalationList";
 import { EscalationDetail } from "../features/escalations/EscalationDetail";
 import { UserManagement } from "../features/users/UserManagement";
+import { LeadConversations } from "@/features/leads/LeadConversations";
 
 const Unauthorized = () => <div>Unauthorized Access</div>;
 
@@ -19,6 +20,10 @@ export const AppRoutes: React.FC = () => {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route
+          path="/leads/:id/conversations"
+          element={<LeadConversations />}
+        />
 
         {/* Protected Routes */}
         <Route element={<ProtectedRoute />}>

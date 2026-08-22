@@ -3,10 +3,11 @@ import { Link, useSearchParams } from "react-router-dom";
 import { api } from "@/services/api";
 import type { Lead, PaginatedResponse } from "@/types/crm";
 import { useAuth } from "@/context/AuthContext";
-import { UserRole } from "@/types/auth";
+import { LogoutIcon } from "@/components/ui/Icons";
 import { Sidebar } from "@/components/SideBar";
 
 export const LeadList: React.FC = () => {
+  const { logout } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [total, setTotal] = useState(0);
@@ -80,14 +81,12 @@ export const LeadList: React.FC = () => {
             <h1 className="text-3xl font-bold tracking-tight text-gray-900">
               Leads
             </h1>
-            {hasRole([UserRole.OWNER]) && (
-              <Link
-                to="/leads/new"
-                className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white shadow hover:bg-indigo-700"
-              >
-                Create Lead
-              </Link>
-            )}
+            <button
+              onClick={logout}
+              className="ml-2 flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-700"
+            >
+              <LogoutIcon /> Log Out
+            </button>
           </header>
 
           {/* Filters Box */}

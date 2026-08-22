@@ -93,18 +93,17 @@ export const Sidebar: React.FC = () => {
               </Link>
             </li>
             <li>
-              {user?.role === "owner" ||
-                (user?.role === "sales_manager" && (
-                  <Link
-                    to="/escalations"
-                    className="flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-gray-900"
-                  >
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-500">
-                      <AlertIcon />
-                    </div>
-                    Escalated Leads
-                  </Link>
-                ))}
+              {(user?.role === "owner" || user?.role === "sales_manager") && (
+                <Link
+                  to="/escalations"
+                  className="flex items-center gap-3 text-sm font-medium text-gray-700 hover:text-gray-900"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-500">
+                    <AlertIcon />
+                  </div>
+                  Escalated Leads
+                </Link>
+              )}
             </li>
           </ul>
         </nav>
