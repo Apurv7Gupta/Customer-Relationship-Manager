@@ -4,6 +4,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { api } from "@/services/api";
+import { useAuth } from "@/context/AuthContext";
+import { Sidebar } from "@/components/SideBar";
+import { LogoutIcon } from "@/components/ui/Icons";
 
 const leadSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -31,6 +34,7 @@ type LeadFormData = z.infer<typeof leadSchema>;
 export const LeadForm: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { logout } = useAuth();
   const isEdit = Boolean(id);
   const [globalError, setGlobalError] = useState<string | null>(null);
   const [loading, setLoading] = useState(isEdit);
@@ -76,92 +80,142 @@ export const LeadForm: React.FC = () => {
     }
   };
 
-  if (loading) return <div className="p-8">Loading form...</div>;
+  if (loading) {
+    return (
+      <div className="flex h-screen items-center justify-center bg-[#f8f9fa] font-medium text-gray-500">
+        Loading form...
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 bg-white p-8 rounded shadow">
-      <div className="flex items-center mb-6 space-x-4">
-        <button
-          type="button"
-          onClick={() => navigate(-1)}
-          className="px-3 py-1 text-sm font-medium text-white bg-blue-700 border border-gray-300 rounded shadow-sm hover:bg-blue-800"
-        >
-          &larr;
-        </button>
-        <h2 className="text-2xl font-bold">
-          {isEdit ? "Edit Lead" : "Create Lead"}
-        </h2>
-      </div>
-      {globalError && (
-        <div className="mb-4 bg-red-50 text-red-700 p-3 rounded">
-          {globalError}
-        </div>
-      )}
+    <div className="flex h-screen bg-[#f8f9fa] font-sans text-gray-800">
+      <Sidebar />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium">Name</label>
-            <input
-              {...register("name")}
-              className="mt-1 block w-full border rounded p-2"
-            />
-            {errors.name && (
-              <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
-            )}
+      <main className="flex-1 overflow-y-auto bg-[#fafafa] p-8">
+        <header className="mb-8 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm hover:bg-gray-50"
+            >
+              &larr;
+            </button>
+            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+              {isEdit ? "Edit Lead" : "Create New Lead"}
+            </h1>
           </div>
-          <div>
-            <label className="block text-sm font-medium">Phone</label>
-            <input
-              {...register("phone")}
-              className="mt-1 block w-full border rounded p-2"
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.phone.message}
-              </p>
-            )}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={logout}
+              className="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-700"
+            >
+              <LogoutIcon /> Log Out
+            </button>
           </div>
-        </div>
+        </header>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium">Email</label>
-            <input
-              type="email"
-              {...register("email")}
-              className="mt-1 block w-full border rounded p-2"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium">Source</label>
-            <input
-              {...register("source")}
-              className="mt-1 block w-full border rounded p-2"
-            />
-            {errors.source && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.source.message}
-              </p>
-            )}
-          </div>
-        </div>
+        <div className="max-w-3xl rounded-xl border border-gray-100 bg-white p-8 shadow-sm">
+          {globalError && (
+            <div className="mb-6 rounded-lg border border-red-100 bg-red-50 p-4 text-sm font-medium text-red-700">
+              {globalError}
+            </div>
+          )}
 
-        <div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-indigo-600 text-white p-2 rounded hover:bg-indigo-700 disabled:opacity-50"
-          >
-            {isSubmitting ? "Saving..." : "Save Lead"}
-          </button>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600">
+                  Full Name
+                </label>
+                <input
+                  {...register("name")}
+                  placeholder="e.g. Jane Doe"
+                  className="mt-2 block w-full rounded-lg border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+                {errors.name && (
+                  <p className="mt-1.5 text-xs font-medium text-red-500">
+                    {errors.name.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600">
+                  Phone Number
+                </label>
+                <input
+                  {...register("phone")}
+                  placeholder="+1 (555) 000-0000"
+                  className="mt-2 block w-full rounded-lg border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+                {errors.phone && (
+                  <p className="mt-1.5 text-xs font-medium text-red-500">
+                    {errors.phone.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  {...register("email")}
+                  placeholder="jane@example.com"
+                  className="mt-2 block w-full rounded-lg border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+                {errors.email && (
+                  <p className="mt-1.5 text-xs font-medium text-red-500">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold uppercase tracking-wider text-gray-600">
+                  Acquisition Source
+                </label>
+                <input
+                  {...register("source")}
+                  placeholder="Website, Social, Referral..."
+                  className="mt-2 block w-full rounded-lg border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                />
+                {errors.source && (
+                  <p className="mt-1.5 text-xs font-medium text-red-500">
+                    {errors.source.message}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3 border-t border-gray-100 pt-4">
+              <button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white shadow hover:bg-indigo-700 disabled:opacity-50"
+              >
+                {isSubmitting
+                  ? "Saving..."
+                  : isEdit
+                    ? "Update Lead"
+                    : "Create Lead"}
+              </button>
+            </div>
+          </form>
         </div>
-      </form>
+      </main>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import axios from "axios";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-
+import { Sidebar } from "@/components/SideBar";
 import { api } from "@/services/api";
 import type {
   Escalation,
@@ -24,11 +24,10 @@ const getErrorMessage = (error: unknown, fallback: string): string => {
   return fallback;
 };
 
-export const EscalationList = () => {
+export const EscalationList: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [response, setResponse] = useState<PaginatedResponse<Escalation> | null>(
-    null,
-  );
+  const [response, setResponse] =
+    useState<PaginatedResponse<Escalation> | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -73,106 +72,129 @@ export const EscalationList = () => {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 p-6 sm:p-8">
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">Escalations</h1>
-            <p className="mt-1 text-sm text-gray-600">
-              Review customer conversations requiring human attention.
-            </p>
-          </div>
-          <Link to="/dashboard" className="text-sm font-medium text-indigo-600 hover:text-indigo-800">
-            Back to dashboard
-          </Link>
-        </div>
+    <div className="flex h-screen bg-[#f8f9fa] font-sans text-gray-800">
+      <Sidebar />
+      <main className="flex-1 overflow-y-auto bg-[#fafafa] p-8">
+        <div className="mx-auto max-w-6xl">
+          {/* Header */}
+          <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                Escalations
+              </h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Review customer conversations requiring human attention.
+              </p>
+            </div>
+          </header>
 
-        <div className="mb-4 rounded-lg bg-white p-4 shadow-sm">
-          <label htmlFor="escalation-status" className="block text-sm font-medium text-gray-700">
-            Status
-          </label>
-          <select
-            id="escalation-status"
-            value={selectedStatus}
-            onChange={(event) => changeStatusFilter(event.target.value)}
-            className="mt-1 w-full rounded border border-gray-300 p-2 sm:w-56"
-          >
-            <option value="">All statuses</option>
-            {escalationStatuses.map((status) => (
-              <option key={status} value={status}>
-                {status.replaceAll("_", " ")}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {loading ? (
-          <div className="rounded-lg bg-white p-8 text-center text-gray-600 shadow-sm" role="status">
-            Loading escalations…
-          </div>
-        ) : error ? (
-          <div className="rounded-lg bg-red-50 p-4 text-red-700" role="alert">
-            <p>{error}</p>
-            <button type="button" onClick={() => void loadEscalations()} className="mt-2 text-sm font-medium underline">
-              Try again
-            </button>
-          </div>
-        ) : !response || response.data.length === 0 ? (
-          <div className="rounded-lg bg-white p-8 text-center text-gray-600 shadow-sm">
-            No escalations match the selected filter.
-          </div>
-        ) : (
-          <section className="overflow-hidden rounded-lg bg-white shadow-sm">
-            <div className="divide-y divide-gray-200">
-              {response.data.map((escalation) => (
-                <Link
-                  key={escalation._id}
-                  to={`/escalations/${escalation._id}`}
-                  className="block p-4 hover:bg-gray-50"
-                >
-                  <div className="flex flex-wrap items-start justify-between gap-3">
-                    <div>
-                      <p className="font-medium text-gray-900">{escalation.reason}</p>
-                      <p className="mt-1 text-sm text-gray-600">
-                        Lead {escalation.lead_id} · {new Date(escalation.created_at).toLocaleString()}
-                      </p>
-                    </div>
-                    <div className="flex gap-2 text-xs font-medium">
-                      <span className="rounded bg-red-100 px-2 py-1 text-red-800">
-                        {escalation.priority} priority
-                      </span>
-                      <span className="rounded bg-indigo-100 px-2 py-1 text-indigo-800">
-                        {escalation.status.replaceAll("_", " ")}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
+          {/* Filters Box */}
+          <div className="mb-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+            <label
+              htmlFor="escalation-status"
+              className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-600"
+            >
+              Status Filter
+            </label>
+            <select
+              id="escalation-status"
+              value={selectedStatus}
+              onChange={(event) => changeStatusFilter(event.target.value)}
+              className="block w-full sm:w-64 rounded-lg border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-800 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              <option value="">All statuses</option>
+              {escalationStatuses.map((status) => (
+                <option key={status} value={status} className="capitalize">
+                  {status.replaceAll("_", " ")}
+                </option>
               ))}
+            </select>
+          </div>
+
+          {/* Content Area */}
+          {loading ? (
+            <div
+              className="rounded-xl border border-gray-100 bg-white p-8 text-center font-medium text-gray-500 shadow-sm"
+              role="status"
+            >
+              Loading escalations…
             </div>
-            <div className="flex items-center justify-between border-t border-gray-200 p-4">
+          ) : error ? (
+            <div
+              className="rounded-xl border border-red-100 bg-red-50 p-6 text-red-700 shadow-sm"
+              role="alert"
+            >
+              <p className="font-medium">{error}</p>
               <button
                 type="button"
-                disabled={page <= 1}
-                onClick={() => changePage(page - 1)}
-                className="rounded border px-3 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
+                onClick={() => void loadEscalations()}
+                className="mt-3 inline-flex items-center justify-center rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white shadow hover:bg-red-700"
               >
-                Previous
-              </button>
-              <span className="text-sm text-gray-600">
-                Page {response.meta.page} of {response.meta.total_pages}
-              </span>
-              <button
-                type="button"
-                disabled={page >= response.meta.total_pages}
-                onClick={() => changePage(page + 1)}
-                className="rounded border px-3 py-1 text-sm disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Next
+                Try again
               </button>
             </div>
-          </section>
-        )}
-      </div>
-    </main>
+          ) : !response || response.data.length === 0 ? (
+            <div className="rounded-xl border border-gray-100 bg-white p-8 text-center font-medium text-gray-500 shadow-sm">
+              No escalations match the selected filter.
+            </div>
+          ) : (
+            <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+              <div className="divide-y divide-gray-100">
+                {response.data.map((escalation) => (
+                  <Link
+                    key={escalation._id}
+                    to={`/escalations/${escalation._id}`}
+                    className="block p-5 transition-colors hover:bg-gray-50/80"
+                  >
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <p className="text-base font-semibold text-gray-900">
+                          {escalation.reason}
+                        </p>
+                        <p className="mt-1 text-sm text-gray-500">
+                          Lead {escalation.lead_id} &bull;{" "}
+                          {new Date(escalation.created_at).toLocaleString()}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
+                        <span className="rounded-md bg-red-50 px-2.5 py-1 text-red-700 border border-red-100">
+                          {escalation.priority} priority
+                        </span>
+                        <span className="rounded-md bg-indigo-50 px-2.5 py-1 text-indigo-700 border border-indigo-100">
+                          {escalation.status.replaceAll("_", " ")}
+                        </span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Pagination Controls */}
+              <div className="flex items-center justify-between border-t border-gray-100 bg-gray-50/50 p-4">
+                <button
+                  type="button"
+                  disabled={page <= 1}
+                  onClick={() => changePage(page - 1)}
+                  className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Previous
+                </button>
+                <span className="text-sm font-medium text-gray-600">
+                  Page {response.meta.page} of {response.meta.total_pages}
+                </span>
+                <button
+                  type="button"
+                  disabled={page >= response.meta.total_pages}
+                  onClick={() => changePage(page + 1)}
+                  className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
   );
 };
