@@ -52,7 +52,7 @@ def analyze_mock_message(message: str) -> AIAnalysis:
         term in text for term in ("price", "pricing", "cost", "budget", "negotia")
     ):
         intent = "pricing_or_negotiation"
-        sentiment = "neutral"
+        sentiment = "Qualified"
         priority = LeadPriority.HIGH
         suggested_status = LeadStatus.QUALIFIED
         suggested_next_action = "Prepare pricing details for human review"
@@ -82,7 +82,7 @@ def analyze_mock_message(message: str) -> AIAnalysis:
         escalation_reason = None
     else:
         intent = "unknown"
-        sentiment = "neutral"
+        sentiment = "unknown"
         priority = LeadPriority.MEDIUM
         suggested_status = LeadStatus.NEW
         suggested_next_action = "Ask clarifying questions"
@@ -92,7 +92,7 @@ def analyze_mock_message(message: str) -> AIAnalysis:
     confidence = 0.55 if intent == "unknown" else 0.91
     if "ignore previous" in text or "system prompt" in text:
         intent = "potential_prompt_injection"
-        sentiment = "neutral"
+        sentiment = "critical"
         priority = LeadPriority.HIGH
         suggested_status = LeadStatus.NEW
         suggested_next_action = "Have a manager review the message"

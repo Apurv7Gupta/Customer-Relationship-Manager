@@ -5,6 +5,31 @@ import type { Lead, Activity, FollowUp, PaginatedResponse } from "@/types/crm";
 import { useAuth } from "@/context/AuthContext";
 import { UserRole, type User } from "@/types/auth";
 import { Sidebar } from "@/components/SideBar";
+import { motion, type Variants } from "framer-motion";
+
+// Framer Motion Animation Variants
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 300,
+      damping: 24,
+    },
+  },
+};
 
 export const LeadDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -118,44 +143,56 @@ export const LeadDetail: React.FC = () => {
     <div className="flex h-screen bg-[#f8f9fa] font-sans text-gray-800">
       <Sidebar />
       <main className="flex-1 overflow-y-auto bg-[#fafafa] p-6 lg:p-8">
-        <div className="mx-auto max-w-7xl">
+        <motion.div
+          className="mx-auto max-w-7xl"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
           {/* Header */}
-          <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <motion.header
+            variants={itemVariants}
+            className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center"
+          >
             <div className="flex items-center gap-4">
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm hover:bg-gray-50"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-50"
               >
                 &larr;
               </button>
               <div>
-                <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
                   {lead.name}
                 </h1>
-                <p className="mt-1 flex items-center gap-2 text-sm text-gray-500">
+                <p className="mt-1 flex flex-wrap items-center gap-2 text-sm text-gray-500">
                   <span className="inline-flex items-center rounded-md bg-indigo-50 px-2 py-1 text-xs font-semibold uppercase tracking-wider text-indigo-700">
                     {lead.status.replace("_", " ")}
                   </span>
-                  &bull; Lead via {lead.source}
+                  <span className="hidden sm:inline">&bull;</span>
+                  <span>Lead via {lead.source}</span>
                 </p>
               </div>
             </div>
             {hasRole([UserRole.OWNER]) && (
               <button
                 onClick={deleteLead}
-                className="inline-flex items-center justify-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-medium text-white shadow hover:bg-red-700"
+                className="inline-flex w-full items-center justify-center rounded-lg bg-red-600 px-5 py-2.5 text-sm font-medium text-white shadow transition-colors hover:bg-red-700 sm:w-auto"
               >
                 Delete Lead
               </button>
             )}
-          </header>
+          </motion.header>
 
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             {/* Left/Main Column */}
             <div className="space-y-8 lg:col-span-2">
               {/* Core Information Card */}
-              <section className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+              <motion.section
+                variants={itemVariants}
+                className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
+              >
                 <h2 className="mb-6 text-lg font-bold text-gray-900">
                   Contact Details
                 </h2>
@@ -185,7 +222,7 @@ export const LeadDetail: React.FC = () => {
                     <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
                       Change Status
                     </label>
-                    <div className="mt-2 flex shadow-sm rounded-lg">
+                    <div className="mt-2 flex rounded-lg shadow-sm">
                       <select
                         value={newStatus}
                         onChange={(e) => setNewStatus(e.target.value)}
@@ -204,7 +241,7 @@ export const LeadDetail: React.FC = () => {
                       </select>
                       <button
                         onClick={updateStatus}
-                        className="rounded-r-lg border border-transparent bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700"
+                        className="rounded-r-lg border border-transparent bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
                       >
                         Update
                       </button>
@@ -216,7 +253,7 @@ export const LeadDetail: React.FC = () => {
                       <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
                         Assign Lead
                       </label>
-                      <div className="mt-2 flex shadow-sm rounded-lg">
+                      <div className="mt-2 flex rounded-lg shadow-sm">
                         <select
                           value={newAssignee}
                           onChange={(e) => setNewAssignee(e.target.value)}
@@ -231,7 +268,7 @@ export const LeadDetail: React.FC = () => {
                         </select>
                         <button
                           onClick={updateAssignee}
-                          className="rounded-r-lg border border-transparent bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-indigo-700"
+                          className="rounded-r-lg border border-transparent bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
                         >
                           Assign
                         </button>
@@ -239,10 +276,13 @@ export const LeadDetail: React.FC = () => {
                     </div>
                   )}
                 </div>
-              </section>
+              </motion.section>
 
               {/* Activity Timeline */}
-              <section className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+              <motion.section
+                variants={itemVariants}
+                className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
+              >
                 <h3 className="mb-6 text-lg font-bold text-gray-900">
                   Activity Timeline
                 </h3>
@@ -255,7 +295,7 @@ export const LeadDetail: React.FC = () => {
                     activities.map((act) => (
                       <div
                         key={act._id}
-                        className="relative pl-6 before:absolute before:left-0 before:top-1.5 before:bottom-[-20px] before:w-[2px] before:bg-gray-100 last:before:hidden"
+                        className="relative pl-6 before:absolute before:bottom-[-20px] before:left-0 before:top-1.5 before:w-[2px] before:bg-gray-100 last:before:hidden"
                       >
                         <div className="absolute left-[-5px] top-1.5 h-3 w-3 rounded-full border-2 border-white bg-indigo-500" />
                         <p className="text-sm font-semibold capitalize text-gray-900">
@@ -271,12 +311,15 @@ export const LeadDetail: React.FC = () => {
                     ))
                   )}
                 </div>
-              </section>
+              </motion.section>
             </div>
 
-            {/* Right Column (Sidebar-like for Details) */}
-            <div className="space-y-6">
-              <section className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+            {/* Right Column */}
+            <div className="space-y-6 lg:col-span-1">
+              <motion.section
+                variants={itemVariants}
+                className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
+              >
                 <h3 className="mb-6 text-lg font-bold text-gray-900">
                   Follow-ups
                 </h3>
@@ -310,7 +353,7 @@ export const LeadDetail: React.FC = () => {
                   </div>
                   <button
                     type="submit"
-                    className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
+                    className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
                   >
                     Schedule Task
                   </button>
@@ -331,7 +374,7 @@ export const LeadDetail: React.FC = () => {
                         <p className="text-sm font-semibold text-gray-900">
                           {f.description}
                         </p>
-                        <div className="mt-2 flex items-center justify-between">
+                        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
                           <p
                             className={`text-xs font-medium ${f.status === "overdue" ? "text-red-600" : "text-gray-500"}`}
                           >
@@ -346,7 +389,7 @@ export const LeadDetail: React.FC = () => {
                                 });
                                 fetchLeadData();
                               }}
-                              className="text-xs font-semibold text-indigo-600 hover:text-indigo-800"
+                              className="text-xs font-semibold text-indigo-600 transition-colors hover:text-indigo-800"
                             >
                               Mark Done
                             </button>
@@ -356,18 +399,21 @@ export const LeadDetail: React.FC = () => {
                     ))
                   )}
                 </div>
-              </section>
+              </motion.section>
 
               {/* Conversations Navigation Button */}
-              <button
+              <motion.button
+                variants={itemVariants}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 onClick={() => navigate(`/leads/${id}/conversations`)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-indigo-100 bg-white px-6 py-4 text-sm font-bold text-indigo-700 shadow-sm transition-colors hover:bg-indigo-50 hover:border-indigo-200"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-indigo-100 bg-white px-6 py-4 text-sm font-bold text-indigo-700 shadow-sm transition-colors hover:border-indigo-200 hover:bg-indigo-50"
               >
                 <span>✨</span> View Conversations & AI Drafts
-              </button>
+              </motion.button>
             </div>
           </div>
-        </div>
+        </motion.div>
       </main>
     </div>
   );

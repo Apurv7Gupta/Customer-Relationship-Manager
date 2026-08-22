@@ -5,9 +5,10 @@ import type { Lead, PaginatedResponse } from "@/types/crm";
 import { useAuth } from "@/context/AuthContext";
 import { LogoutIcon } from "@/components/ui/Icons";
 import { Sidebar } from "@/components/SideBar";
+import { motion } from "framer-motion";
 
 export const LeadList: React.FC = () => {
-  const { logout } = useAuth();
+  const { logout, hasRole } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [total, setTotal] = useState(0);
@@ -20,7 +21,6 @@ export const LeadList: React.FC = () => {
   const search = searchParams.get("search") || "";
 
   const [searchInput, setSearchInput] = useState(search);
-  const { hasRole } = useAuth();
 
   const fetchLeads = useCallback(async () => {
     setLoading(true);
@@ -69,31 +69,61 @@ export const LeadList: React.FC = () => {
     updateFilters({ search: searchInput });
   };
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 },
+  };
+
   return (
     <div className="flex h-screen bg-[#f8f9fa] font-sans text-gray-800">
       <Sidebar />
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto bg-[#fafafa] p-8">
+      <main className="flex-1 overflow-y-auto bg-[#fafafa] p-6 lg:p-8">
         <div className="mx-auto max-w-6xl">
           {/* Header */}
-          <header className="mb-8 flex items-center justify-between">
-            <h1 className="text-3xl font-bold tracking-tight text-gray-900">
-              Leads
-            </h1>
-            <button
-              onClick={logout}
-              className="ml-2 flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-700"
-            >
-              <LogoutIcon /> Log Out
-            </button>
-          </header>
+          <motion.header
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight text-gray-900">
+                Leads
+              </h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Manage and track your customer leads.
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={logout}
+                className="ml-2 flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-700"
+              >
+                <LogoutIcon /> Log Out
+              </button>
+            </div>
+          </motion.header>
 
           {/* Filters Box */}
-          <div className="mb-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="mb-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
+          >
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
               <form onSubmit={handleSearchSubmit} className="md:col-span-2">
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-600 text-center md:text-left">
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Search Leads
                 </label>
                 <input
@@ -101,18 +131,18 @@ export const LeadList: React.FC = () => {
                   placeholder="Search by name, email, or phone..."
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
-                  className="block w-full rounded-lg border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="block w-full rounded-lg border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors"
                 />
               </form>
 
               <div>
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-600 text-center md:text-left">
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Status Filter
                 </label>
                 <select
                   value={status}
                   onChange={(e) => updateFilters({ status: e.target.value })}
-                  className="block w-full rounded-lg border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-800 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="block w-full rounded-lg border border-gray-200 bg-gray-50/50 px-4 py-2.5 text-sm text-gray-800 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors capitalize"
                 >
                   <option value="">All Statuses</option>
                   <option value="new">New</option>
@@ -126,61 +156,79 @@ export const LeadList: React.FC = () => {
                 </select>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Lead Table */}
-          <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm"
+          >
             {loading ? (
-              <div className="p-8 text-center text-gray-500 font-medium">
-                Loading leads...
+              <div className="p-12 text-center text-sm font-medium text-gray-500">
+                <span className="animate-pulse">Loading leads...</span>
               </div>
             ) : error ? (
-              <div className="p-8 text-center text-red-500 font-medium">
+              <div className="p-8 text-center text-sm font-medium text-red-500">
                 {error}
               </div>
             ) : leads.length === 0 ? (
-              <div className="p-8 text-center text-gray-500 font-medium">
-                No leads found.
+              <div className="p-12 text-center text-sm font-medium text-gray-500">
+                No leads found matching your criteria.
               </div>
             ) : (
-              <table className="min-w-full divide-y divide-gray-100">
-                <thead className="bg-gray-50/50">
-                  <tr>
-                    <th className="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-500">
-                      Name
-                    </th>
-                    <th className="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-500">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-center text-xs font-semibold uppercase tracking-wider text-gray-500">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 bg-white">
-                  {leads.map((lead) => (
-                    <tr
-                      key={lead._id}
-                      className="transition-colors hover:bg-gray-50"
-                    >
-                      <td className="whitespace-nowrap px-6 py-4 text-center text-sm font-semibold text-gray-900">
-                        {lead.name}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-center text-sm capitalize text-gray-600">
-                        {lead.status.replace("_", " ")}
-                      </td>
-                      <td className="whitespace-nowrap px-6 py-4 text-center text-sm">
-                        <Link
-                          to={`/leads/${lead._id}`}
-                          className="font-semibold text-indigo-600 hover:text-indigo-900"
-                        >
-                          View Details
-                        </Link>
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-100">
+                  <thead className="bg-gray-50/80">
+                    <tr>
+                      <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        Name
+                      </th>
+                      <th className="px-6 py-4 text-left text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        Status
+                      </th>
+                      <th className="px-6 py-4 text-right text-xs font-semibold uppercase tracking-wider text-gray-500">
+                        Actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <motion.tbody
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="show"
+                    className="divide-y divide-gray-50 bg-white"
+                  >
+                    {leads.map((lead) => (
+                      <motion.tr
+                        variants={itemVariants}
+                        key={lead._id}
+                        className="transition-colors hover:bg-gray-50/50"
+                      >
+                        <td className="whitespace-nowrap px-6 py-4 text-left text-sm font-semibold text-gray-900">
+                          {lead.name}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4 text-left text-sm">
+                          <span className="inline-flex items-center rounded-md border border-gray-200 bg-gray-50 px-2.5 py-1 text-xs font-medium capitalize text-gray-700">
+                            {lead.status.replace("_", " ")}
+                          </span>
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
+                          <Link
+                            to={`/leads/${lead._id}`}
+                            className="inline-flex items-center font-medium text-indigo-600 transition-colors hover:text-indigo-800"
+                          >
+                            View Details{" "}
+                            <span className="ml-1 text-lg leading-none">
+                              &rsaquo;
+                            </span>
+                          </Link>
+                        </td>
+                      </motion.tr>
+                    ))}
+                  </motion.tbody>
+                </table>
+              </div>
             )}
 
             {/* Pagination Controls */}
@@ -193,12 +241,14 @@ export const LeadList: React.FC = () => {
                   params.set("page", String(page - 1));
                   setSearchParams(params);
                 }}
-                className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Previous
               </button>
-              <span className="text-sm font-medium text-gray-600">
-                Page {page} of {totalPages || 1} (Total: {total})
+              <span className="text-sm font-medium text-gray-500">
+                Page <span className="font-semibold text-gray-900">{page}</span>{" "}
+                of {totalPages || 1}{" "}
+                <span className="hidden sm:inline">(Total: {total})</span>
               </span>
               <button
                 type="button"
@@ -208,12 +258,12 @@ export const LeadList: React.FC = () => {
                   params.set("page", String(page + 1));
                   setSearchParams(params);
                 }}
-                className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 Next
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </main>
     </div>

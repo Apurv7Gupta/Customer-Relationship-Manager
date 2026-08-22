@@ -32,6 +32,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     setToken(null);
     localStorage.removeItem("user_data");
     localStorage.removeItem("jwt_token");
+    sessionStorage.removeItem("sidebarAnimated");
   };
 
   const hasRole = (roles: UserRole[]) => {
