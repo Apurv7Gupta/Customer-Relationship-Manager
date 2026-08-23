@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { api } from "@/services/api";
 import { Sidebar } from "@/components/SideBar";
-import { DashboardCard } from "@/components/ui/Dashboardcard";
+import { DashboardCard } from "@/components/ui/DashboardCard";
 import {
   // SearchIcon,
   // BellIcon,
@@ -167,8 +167,24 @@ export const Dashboard: React.FC = () => {
                 </h3>
                 {/* Placeholder for Line Chart */}
                 <div className="flex h-48 sm:h-64 items-end justify-between border-b border-l border-gray-100 pb-2 pl-2">
-                  <div className="flex h-full w-full items-end rounded bg-gradient-to-t from-indigo-50 to-transparent">
-                    <div className="mt-auto h-2/3 w-full rounded-tl-full rounded-tr-full border-t-2 border-indigo-400 bg-indigo-100/50 opacity-60"></div>
+                  <div className="relative h-full w-full overflow-hidden rounded bg-gradient-to-t from-indigo-50 to-transparent">
+                    <svg
+                      className="absolute inset-0 h-full w-full"
+                      viewBox="0 0 100 100"
+                      preserveAspectRatio="none"
+                    >
+                      <path
+                        d="M0,70 C15,55 25,85 40,65 C55,45 65,75 80,55 C90,42 95,50 100,35 L100,100 L0,100 Z"
+                        className="fill-indigo-100/50"
+                      />
+                      <path
+                        d="M0,70 C15,55 25,85 40,65 C55,45 65,75 80,55 C90,42 95,50 100,35"
+                        fill="none"
+                        className="stroke-indigo-400"
+                        strokeWidth="1.5"
+                        vectorEffect="non-scaling-stroke"
+                      />
+                    </svg>
                   </div>
                 </div>
               </motion.div>

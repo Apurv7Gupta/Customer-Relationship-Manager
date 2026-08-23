@@ -8,7 +8,7 @@ import { Sidebar } from "@/components/SideBar";
 import { motion } from "framer-motion";
 
 export const LeadList: React.FC = () => {
-  const { logout, hasRole } = useAuth();
+  const { logout } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [leads, setLeads] = useState<Lead[]>([]);
   const [total, setTotal] = useState(0);
