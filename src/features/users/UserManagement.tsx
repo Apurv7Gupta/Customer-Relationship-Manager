@@ -107,7 +107,7 @@ export const UserManagement: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-50"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50"
             >
               &larr;
             </button>
@@ -124,7 +124,7 @@ export const UserManagement: React.FC = () => {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
             {/* User Creation Form */}
             <motion.div variants={itemVariants} className="lg:col-span-1">
-              <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+              <div className="rounded-xl border border-gray-200 bg-white p-6">
                 <h2 className="mb-6 text-lg font-bold text-gray-900">
                   Create New User
                 </h2>
@@ -203,7 +203,7 @@ export const UserManagement: React.FC = () => {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white shadow transition-colors hover:bg-indigo-700 disabled:opacity-60"
+                      className="flex h-8 w-full items-center justify-center gap-2 rounded-full border border-gray-200 bg-white text-sm font-medium text-gray-700 transition-colors hover:bg-gray-200 hover:cursor-pointer disabled:opacity-60"
                     >
                       {isSubmitting ? "Creating..." : "Create User"}
                     </button>
@@ -214,7 +214,7 @@ export const UserManagement: React.FC = () => {
 
             {/* User List */}
             <motion.div variants={itemVariants} className="lg:col-span-2">
-              <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+              <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
                 <div className="border-b border-gray-100 px-6 py-5">
                   <h3 className="text-lg font-bold text-gray-900">
                     Active Users

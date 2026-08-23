@@ -152,7 +152,7 @@ export const EscalationDetail: React.FC = () => {
             </h1>
           </header>
 
-          <div className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm md:p-8">
+          <div className="rounded-xl border border-gray-200 bg-white p-6 md:p-8">
             <div className="flex flex-wrap items-start justify-between gap-4">
               <div>
                 <h2 className="text-xl font-bold text-gray-900">
@@ -172,7 +172,7 @@ export const EscalationDetail: React.FC = () => {
                 <dt className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
                   Reason
                 </dt>
-                <dd className="mt-2 rounded-lg bg-gray-50 p-4 text-gray-900 border border-gray-100">
+                <dd className="mt-2 rounded-lg p-4 text-gray-900 border border-gray-200">
                   {escalation.reason}
                 </dd>
               </div>
@@ -183,7 +183,7 @@ export const EscalationDetail: React.FC = () => {
                 <dd className="mt-1 break-all font-medium text-gray-900">
                   <Link
                     to={`/leads/${escalation.lead_id}`}
-                    className="text-indigo-600 hover:underline"
+                    className="text-green-600 hover:underline"
                   >
                     {escalation.lead_id}
                   </Link>
@@ -279,12 +279,12 @@ export const EscalationDetail: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-8 flex justify-end">
+              <div className="mt-8 flex justify-center">
                 <button
                   type="button"
                   disabled={saving}
                   onClick={() => void saveEscalation()}
-                  className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white shadow hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex h-8 w-auto p-2 items-center justify-center gap-2 rounded-full border border-gray-200 bg-white text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:cursor-pointer disabled:opacity-60"
                 >
                   {saving
                     ? "Saving…"

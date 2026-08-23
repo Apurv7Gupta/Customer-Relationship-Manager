@@ -89,7 +89,7 @@ export const EscalationList: React.FC = () => {
           </header>
 
           {/* Filters Box */}
-          <div className="mb-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
+          <div className="mb-6 rounded-xl border border-gray-200 bg-white p-6">
             <label
               htmlFor="escalation-status"
               className="mb-2 block text-xs font-semibold uppercase tracking-wider text-gray-600"
@@ -114,14 +114,14 @@ export const EscalationList: React.FC = () => {
           {/* Content Area */}
           {loading ? (
             <div
-              className="rounded-xl border border-gray-100 bg-white p-8 text-center font-medium text-gray-500 shadow-sm"
+              className="rounded-xl border border-gray-200 bg-white p-8 text-center font-medium text-gray-500"
               role="status"
             >
               Loading escalations…
             </div>
           ) : error ? (
             <div
-              className="rounded-xl border border-red-100 bg-red-50 p-6 text-red-700 shadow-sm"
+              className="rounded-xl border border-red-200 bg-red-50 p-6 text-red-700"
               role="alert"
             >
               <p className="font-medium">{error}</p>
@@ -134,11 +134,12 @@ export const EscalationList: React.FC = () => {
               </button>
             </div>
           ) : !response || response.data.length === 0 ? (
-            <div className="rounded-xl border border-gray-100 bg-white p-8 text-center font-medium text-gray-500 shadow-sm">
-              No escalations match the selected filter.
+            <div className="rounded-xl border border-gray-200 bg-white p-8 text-center font-medium text-gray-500">
+              No escalations match the selected filter.overflow-hidden
+              rounded-xl border border-gray-200 bg-white
             </div>
           ) : (
-            <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-white">
               <div className="divide-y divide-gray-100">
                 {response.data.map((escalation) => (
                   <Link
@@ -175,7 +176,7 @@ export const EscalationList: React.FC = () => {
                   type="button"
                   disabled={page <= 1}
                   onClick={() => changePage(page - 1)}
-                  className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Previous
                 </button>
@@ -186,7 +187,7 @@ export const EscalationList: React.FC = () => {
                   type="button"
                   disabled={page >= response.meta.total_pages}
                   onClick={() => changePage(page + 1)}
-                  className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-lg border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   Next
                 </button>

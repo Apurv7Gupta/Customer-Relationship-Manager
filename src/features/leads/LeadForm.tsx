@@ -109,9 +109,10 @@ export const LeadForm: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={logout}
-              className="flex items-center gap-2 rounded-md bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-red-700"
+              className="hidden ml-auto sm:flex items-center gap-2 rounded-lg bg-red-600 px-3 py-[5px] text-sm text-white shadow-sm transition-colors hover:bg-red-700 sm:ml-2"
             >
-              <LogoutIcon /> Log Out
+              <LogoutIcon />
+              <span className="hidden sm:inline">Log Out</span>
             </button>
           </div>
         </header>

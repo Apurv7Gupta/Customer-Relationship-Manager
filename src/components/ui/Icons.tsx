@@ -222,3 +222,37 @@ export const LogoutIcon = (props: IconProps) => (
     />
   </svg>
 );
+
+export const TrendingUpIcon = (props: IconProps) => (
+  <svg
+    {...props}
+    className={`h-4 w-4 ${props.className ?? ""}`}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+    />
+  </svg>
+);
+
+export const TrendingDownIcon = (props: IconProps) => (
+  <svg
+    {...props}
+    className={`h-4 w-4 ${props.className ?? ""}`}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"
+    />
+  </svg>
+);

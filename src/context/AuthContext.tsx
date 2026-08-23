@@ -14,13 +14,27 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [user, setUser] = useState<User | null>(() => {
     const storedUser = localStorage.getItem("user_data");
-    return storedUser ? JSON.parse(storedUser) : null;
+    // explicit check for literal "undefined" string (Discards corrupted data)
+    if (!storedUser || storedUser === "undefined") return null;
+    try {
+      return JSON.parse(storedUser);
+    } catch {
+      localStorage.removeItem("user_data");
+      return null;
+    }
   });
+
   const [token, setToken] = useState<string | null>(() =>
     localStorage.getItem("jwt_token"),
   );
 
   const setAuthData = (data: { user: User; token: string }) => {
+    // strict guard clause to guarantee undefined data never hits state or localStorage.
+    if (!data || !data.user || !data.token) {
+      console.error("Attempted to store invalid auth data", data);
+      return;
+    }
+
     setUser(data.user);
     setToken(data.token);
     localStorage.setItem("user_data", JSON.stringify(data.user));

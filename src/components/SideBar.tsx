@@ -70,7 +70,7 @@ export const Sidebar: React.FC = () => {
         className="z-50 shrink-0 md:w-64"
       >
         <aside
-          className={`fixed inset-y-0 left-0 flex h-full w-64 flex-col justify-between border-r border-gray-200 bg-[#fbfbfb] p-4 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
+          className={`fixed inset-y-0 left-0 flex h-full w-64 flex-col justify-between  bg-[#fefdfd3a] p-4 transition-transform duration-300 ease-in-out md:relative md:translate-x-0 ${
             isOpen
               ? "translate-x-0 shadow-2xl"
               : "-translate-x-full md:shadow-none"
@@ -200,7 +200,7 @@ export const Sidebar: React.FC = () => {
               <Link
                 to="/users"
                 onClick={handleNavClick}
-                className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+                className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
               >
                 <UsersIcon /> Manage Users
               </Link>
@@ -208,7 +208,7 @@ export const Sidebar: React.FC = () => {
             <Link
               to="/leads"
               onClick={handleNavClick}
-              className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-colors hover:bg-gray-50"
+              className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
             >
               <ListIcon /> View All Leads
             </Link>

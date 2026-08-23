@@ -72,7 +72,7 @@ export const Dashboard: React.FC = () => {
     <div className="flex h-screen bg-[#f8f9fa] font-sans text-gray-800">
       <Sidebar />
 
-      <main className="flex-1 overflow-y-auto bg-[#fafafa] p-6 lg:p-8">
+      <main className="flex-1 overflow-y-auto bg-[#fefdfd3a] p-6 lg:p-8">
         <motion.div
           className="mx-auto max-w-7xl"
           variants={containerVariants}
@@ -80,6 +80,7 @@ export const Dashboard: React.FC = () => {
           animate="visible"
         >
           {/* Header */}
+
           <motion.header
             variants={itemVariants}
             className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center"
@@ -92,6 +93,7 @@ export const Dashboard: React.FC = () => {
                 Dashboard
               </h1>
             </div>
+
             <div className="flex flex-wrap items-center gap-2 sm:w-auto sm:gap-3">
               {/* <button className="hidden h-10 w-10 items-center justify-center rounded-full bg-white text-gray-500 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-700 md:flex">
                 <SearchIcon />
@@ -105,154 +107,223 @@ export const Dashboard: React.FC = () => {
               </button> */}
               <button
                 onClick={logout}
-                className="hidden ml-auto sm:flex items-center gap-2 rounded-lg bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-red-700 sm:ml-2"
+                className="hidden ml-auto sm:flex items-center gap-2 rounded-lg bg-red-600 px-3 py-[5px] text-sm text-white shadow-sm transition-colors hover:bg-red-700 sm:ml-2"
               >
                 <LogoutIcon />
                 <span className="hidden sm:inline">Log Out</span>
               </button>
             </div>
           </motion.header>
+          <div className="bg-white rounded-2xl p-3 border border-gray-200">
+            {/* Dashboard Grid Container */}
+            <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
+              {/* Left Column: Stat Cards */}
+              <div className="flex flex-col gap-6">
+                <motion.div variants={itemVariants}>
+                  <DashboardCard
+                    title="Total Leads"
+                    value={stats.total}
+                    trend="+5%"
+                    trendUp={true}
+                    // description="Leads gathered from web, social, and referral campaigns."
+                  />
+                </motion.div>
+                <motion.div variants={itemVariants}>
+                  <DashboardCard
+                    title="New Leads"
+                    value={stats.new}
+                    trend="+8%"
+                    trendUp={true}
+                    // description="Uncontacted leads requiring initial follow-up."
+                  />
+                </motion.div>
+                <motion.div variants={itemVariants}>
+                  <DashboardCard
+                    title="Qualified Leads"
+                    value={stats.qualified}
+                    trend="-10%"
+                    trendUp={false}
+                    // description="Verified leads ready for sales team handoff."
+                  />
+                </motion.div>
+                <motion.div variants={itemVariants}>
+                  <DashboardCard
+                    title="Escalated Leads"
+                    value={stats.escalated}
+                    trend="+2%"
+                    trendUp={true}
+                    // description="Leads flagged for immediate priority or issue review."
+                  />
+                </motion.div>
+              </div>
 
-          {/* Dashboard Grid Container */}
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-            {/* Left Column: Stat Cards */}
-            <div className="flex flex-col gap-6">
-              <motion.div variants={itemVariants}>
-                <DashboardCard
-                  title="Total Leads"
-                  value={stats.total}
-                  trend="+5%"
-                  trendUp={true}
-                  description="Leads gathered from web, social, and referral campaigns."
-                />
-              </motion.div>
-              <motion.div variants={itemVariants}>
-                <DashboardCard
-                  title="New Leads"
-                  value={stats.new}
-                  trend="+8%"
-                  trendUp={true}
-                  description="Uncontacted leads requiring initial follow-up."
-                />
-              </motion.div>
-              <motion.div variants={itemVariants}>
-                <DashboardCard
-                  title="Qualified Leads"
-                  value={stats.qualified}
-                  trend="-10%"
-                  trendUp={false}
-                  description="Verified leads ready for sales team handoff."
-                />
-              </motion.div>
-              <motion.div variants={itemVariants}>
-                <DashboardCard
-                  title="Escalated Leads"
-                  value={stats.escalated}
-                  trend="+2%"
-                  trendUp={true}
-                  description="Leads flagged for immediate priority or issue review."
-                />
-              </motion.div>
-            </div>
+              {/* Right Column: Charts Container */}
+              <div className="flex flex-col gap-6 xl:col-span-2">
+                {/* Top Chart */}
+                <motion.div
+                  variants={itemVariants}
+                  className="flex flex-col rounded-xl border border-gray-200 bg-white p-6 sm:flex-1"
+                >
+                  <h3 className="mb-4 text-lg font-bold text-gray-900">
+                    Weekly Lead Count Trend
+                  </h3>
+                  {/* Placeholder for Line Chart */}
+                  <div className="flex h-48 sm:h-64 items-end justify-between border-b border-l border-gray-100 pb-2 pl-2">
+                    <div className="relative h-full w-full overflow-hidden rounded bg-gradient-to-t from-indigo-50 to-transparent">
+                      <svg
+                        className="absolute inset-0 h-full w-full"
+                        viewBox="0 0 100 100"
+                        preserveAspectRatio="none"
+                        aria-hidden="true"
+                      >
+                        <defs>
+                          <linearGradient
+                            id="areaGradient"
+                            x1="0"
+                            y1="0"
+                            x2="0"
+                            y2="1"
+                          >
+                            <stop
+                              offset="0%"
+                              className="text-indigo-200/70"
+                              stopColor="currentColor"
+                            />
+                            <stop
+                              offset="100%"
+                              className="text-indigo-50/20"
+                              stopColor="currentColor"
+                            />
+                          </linearGradient>
 
-            {/* Right Column: Charts Container */}
-            <div className="flex flex-col gap-6 xl:col-span-2">
-              {/* Top Chart */}
-              <motion.div
-                variants={itemVariants}
-                className="flex flex-col rounded-xl border border-gray-100 bg-white p-6 shadow-sm sm:flex-1"
-              >
-                <h3 className="mb-4 text-lg font-bold text-gray-900">
-                  Weekly Lead Count Trend
-                </h3>
-                {/* Placeholder for Line Chart */}
-                <div className="flex h-48 sm:h-64 items-end justify-between border-b border-l border-gray-100 pb-2 pl-2">
-                  <div className="relative h-full w-full overflow-hidden rounded bg-gradient-to-t from-indigo-50 to-transparent">
-                    <svg
-                      className="absolute inset-0 h-full w-full"
-                      viewBox="0 0 100 100"
-                      preserveAspectRatio="none"
-                    >
-                      <path
-                        d="M0,70 C15,55 25,85 40,65 C55,45 65,75 80,55 C90,42 95,50 100,35 L100,100 L0,100 Z"
-                        className="fill-indigo-100/50"
-                      />
-                      <path
-                        d="M0,70 C15,55 25,85 40,65 C55,45 65,75 80,55 C90,42 95,50 100,35"
-                        fill="none"
-                        className="stroke-indigo-400"
-                        strokeWidth="1.5"
-                        vectorEffect="non-scaling-stroke"
-                      />
-                    </svg>
+                          <linearGradient
+                            id="lineGradient"
+                            x1="0"
+                            y1="0"
+                            x2="1"
+                            y2="0"
+                          >
+                            <stop
+                              offset="0%"
+                              className="text-indigo-300"
+                              stopColor="currentColor"
+                            />
+                            <stop
+                              offset="50%"
+                              className="text-indigo-500"
+                              stopColor="currentColor"
+                            />
+                            <stop
+                              offset="100%"
+                              className="text-indigo-400"
+                              stopColor="currentColor"
+                            />
+                          </linearGradient>
+                        </defs>
+
+                        {/* Soft area fill */}
+                        <path
+                          d="
+      M0 72
+      C6 69, 11 58, 16 58
+      C20 58, 23 81, 27 81
+      C37 81, 46 47, 56 47
+      C61 47, 64 72, 68 72
+      C78 72, 89 36, 100 36
+      L100 100
+      L0 100
+      Z
+    "
+                          fill="url(#areaGradient)"
+                        />
+
+                        {/* Main line */}
+                        <path
+                          d="
+      M0 72
+      C6 69, 11 58, 16 58
+      C20 58, 23 81, 27 81
+      C37 81, 46 47, 56 47
+      C61 47, 64 72, 68 72
+      C78 72, 89 36, 100 36
+    "
+                          fill="none"
+                          stroke="url(#lineGradient)"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          vectorEffect="non-scaling-stroke"
+                        />
+                      </svg>
+                    </div>
                   </div>
+                </motion.div>
+
+                {/* Bottom Charts (Two Columns) */}
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                  <motion.div
+                    variants={itemVariants}
+                    className="rounded-xl border border-gray-200 bg-white p-6"
+                  >
+                    <h3 className="mb-4 text-lg font-bold text-gray-900">
+                      Lead Acquisition Source
+                    </h3>
+                    {/* Placeholder for Bar Chart */}
+                    <div className="flex h-48 items-end justify-around gap-2 pt-4">
+                      <div className="h-full w-8 sm:w-10 rounded-t bg-indigo-200 transition-all hover:bg-indigo-300"></div>
+                      <div className="h-3/5 w-8 sm:w-10 rounded-t bg-indigo-200 transition-all hover:bg-indigo-300"></div>
+                      <div className="h-2/5 w-8 sm:w-10 rounded-t bg-indigo-200 transition-all hover:bg-indigo-300"></div>
+                      <div className="h-1/5 w-8 sm:w-10 rounded-t bg-indigo-200 transition-all hover:bg-indigo-300"></div>
+                      <div className="h-1/5 w-8 sm:w-10 rounded-t bg-indigo-200 transition-all hover:bg-indigo-300"></div>
+                    </div>
+                    <div className="mt-4 flex justify-around text-xs font-medium text-gray-500">
+                      <span>Web</span>
+                      <span>Social</span>
+                      <span>Referral</span>
+                      <span>Email</span>
+                      <span>Other</span>
+                    </div>
+                  </motion.div>
+
+                  <motion.div
+                    variants={itemVariants}
+                    className="rounded-xl border border-gray-200 bg-white p-6"
+                  >
+                    <h3 className="mb-4 text-lg font-bold text-gray-900">
+                      Lead Status Breakdown
+                    </h3>
+                    {/* Placeholder for Donut Chart */}
+                    <div className="flex h-48 flex-col sm:flex-row items-center justify-center gap-6">
+                      <div className="relative flex h-28 w-28 sm:h-32 sm:w-32 items-center justify-center rounded-full border-[12px] border-blue-500 border-l-red-500 border-t-yellow-500">
+                        <div className="flex flex-col items-center">
+                          <span className="text-xl font-bold text-gray-900">
+                            {stats.total}
+                          </span>
+                          <span className="text-xs font-medium text-gray-500">
+                            leads
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex flex-row sm:flex-col gap-3 sm:gap-2 text-sm font-medium text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <div className="h-3 w-3 rounded-full bg-blue-500 shadow-sm"></div>{" "}
+                          <span className="hidden sm:inline">New</span>{" "}
+                          {stats.new}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="h-3 w-3 rounded-full bg-red-500 shadow-sm"></div>{" "}
+                          <span className="hidden sm:inline">Qualified</span>{" "}
+                          {stats.qualified}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <div className="h-3 w-3 rounded-full bg-yellow-500 shadow-sm"></div>{" "}
+                          <span className="hidden sm:inline">Escalated</span>{" "}
+                          {stats.escalated}
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
                 </div>
-              </motion.div>
-
-              {/* Bottom Charts (Two Columns) */}
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <motion.div
-                  variants={itemVariants}
-                  className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
-                >
-                  <h3 className="mb-4 text-lg font-bold text-gray-900">
-                    Lead Acquisition Source
-                  </h3>
-                  {/* Placeholder for Bar Chart */}
-                  <div className="flex h-48 items-end justify-around gap-2 pt-4">
-                    <div className="h-full w-8 sm:w-10 rounded-t bg-indigo-200 transition-all hover:bg-indigo-300"></div>
-                    <div className="h-3/5 w-8 sm:w-10 rounded-t bg-indigo-200 transition-all hover:bg-indigo-300"></div>
-                    <div className="h-2/5 w-8 sm:w-10 rounded-t bg-indigo-200 transition-all hover:bg-indigo-300"></div>
-                    <div className="h-1/5 w-8 sm:w-10 rounded-t bg-indigo-200 transition-all hover:bg-indigo-300"></div>
-                    <div className="h-1/5 w-8 sm:w-10 rounded-t bg-indigo-200 transition-all hover:bg-indigo-300"></div>
-                  </div>
-                  <div className="mt-4 flex justify-around text-xs font-medium text-gray-500">
-                    <span>Web</span>
-                    <span>Social</span>
-                    <span>Referral</span>
-                    <span>Email</span>
-                    <span>Other</span>
-                  </div>
-                </motion.div>
-
-                <motion.div
-                  variants={itemVariants}
-                  className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
-                >
-                  <h3 className="mb-4 text-lg font-bold text-gray-900">
-                    Lead Status Breakdown
-                  </h3>
-                  {/* Placeholder for Donut Chart */}
-                  <div className="flex h-48 flex-col sm:flex-row items-center justify-center gap-6">
-                    <div className="relative flex h-28 w-28 sm:h-32 sm:w-32 items-center justify-center rounded-full border-[12px] border-blue-500 border-l-red-500 border-t-yellow-500">
-                      <div className="flex flex-col items-center">
-                        <span className="text-xl font-bold text-gray-900">
-                          {stats.total}
-                        </span>
-                        <span className="text-xs font-medium text-gray-500">
-                          leads
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex flex-row sm:flex-col gap-3 sm:gap-2 text-sm font-medium text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <div className="h-3 w-3 rounded-full bg-blue-500 shadow-sm"></div>{" "}
-                        <span className="hidden sm:inline">New</span>{" "}
-                        {stats.new}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-3 w-3 rounded-full bg-red-500 shadow-sm"></div>{" "}
-                        <span className="hidden sm:inline">Qualified</span>{" "}
-                        {stats.qualified}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-3 w-3 rounded-full bg-yellow-500 shadow-sm"></div>{" "}
-                        <span className="hidden sm:inline">Escalated</span>{" "}
-                        {stats.escalated}
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
               </div>
             </div>
           </div>
