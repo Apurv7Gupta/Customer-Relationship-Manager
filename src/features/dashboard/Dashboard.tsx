@@ -125,6 +125,7 @@ export const Dashboard: React.FC = () => {
                     value={stats.total}
                     trend="+5%"
                     trendUp={true}
+                    description=""
                     // description="Leads gathered from web, social, and referral campaigns."
                   />
                 </motion.div>
@@ -134,6 +135,7 @@ export const Dashboard: React.FC = () => {
                     value={stats.new}
                     trend="+8%"
                     trendUp={true}
+                    description=""
                     // description="Uncontacted leads requiring initial follow-up."
                   />
                 </motion.div>
@@ -143,6 +145,7 @@ export const Dashboard: React.FC = () => {
                     value={stats.qualified}
                     trend="-10%"
                     trendUp={false}
+                    description=""
                     // description="Verified leads ready for sales team handoff."
                   />
                 </motion.div>
@@ -152,6 +155,7 @@ export const Dashboard: React.FC = () => {
                     value={stats.escalated}
                     trend="+2%"
                     trendUp={true}
+                    description=""
                     // description="Leads flagged for immediate priority or issue review."
                   />
                 </motion.div>
