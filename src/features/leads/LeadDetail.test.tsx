@@ -1,6 +1,6 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { vi, describe, it, expect, beforeEach } from "vitest";
+import { vi, describe, it, expect, beforeEach, type Mock } from "vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { LeadDetail } from "./LeadDetail";
 import { api } from "@/services/api";
@@ -9,6 +9,39 @@ import { UserRole } from "@/types/auth";
 
 vi.mock("@/services/api");
 vi.mock("@/context/AuthContext");
+
+vi.mock("@/components/SideBar", () => ({
+  Sidebar: () => <div data-testid="mock-sidebar">Sidebar</div>,
+}));
+
+const mockNavigate = vi.fn();
+// CHANGED: Mock router to avoid No routes matched location errors
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return { ...actual, useNavigate: () => mockNavigate };
+});
+
+vi.mock("framer-motion", async () => {
+  const actual = await vi.importActual("framer-motion");
+  return {
+    ...actual,
+    motion: {
+      // CHANGED: Strip whileHover and whileTap so they don't hit the DOM and trigger stderr
+      div: ({ children, whileHover, whileTap, ...props }: any) => (
+        <div {...props}>{children}</div>
+      ),
+      header: ({ children, whileHover, whileTap, ...props }: any) => (
+        <header {...props}>{children}</header>
+      ),
+      section: ({ children, whileHover, whileTap, ...props }: any) => (
+        <section {...props}>{children}</section>
+      ),
+      button: ({ children, whileHover, whileTap, ...props }: any) => (
+        <button {...props}>{children}</button>
+      ),
+    },
+  };
+});
 
 describe("LeadDetail", () => {
   beforeEach(() => {
@@ -19,13 +52,14 @@ describe("LeadDetail", () => {
         .mockImplementation((roles) => roles.includes(UserRole.OWNER)),
     });
 
-    vi.mocked(api.get).mockImplementation(async (url: string) => {
+    (api.get as Mock).mockImplementation(async (url: string) => {
       if (url.includes("/api/leads/")) {
         return {
           data: {
             _id: "1",
             name: "Jane Smith",
             email: "jane@example.com",
+            phone: "+1234567890",
             status: "new",
             priority: "high",
             source: "Web",
@@ -89,7 +123,7 @@ describe("LeadDetail", () => {
   it("renders lead details, activities, and followups successfully", async () => {
     renderComponent();
 
-    expect(screen.getByText(/Loading details.../i)).toBeInTheDocument();
+    expect(screen.getByText(/Loading lead details.../i)).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText("Jane Smith")).toBeInTheDocument();
@@ -101,7 +135,7 @@ describe("LeadDetail", () => {
 
   it("allows owner to see delete button and triggers delete API", async () => {
     window.confirm = vi.fn().mockReturnValue(true);
-    vi.mocked(api.delete).mockResolvedValueOnce({});
+    (api.delete as Mock).mockResolvedValueOnce({});
 
     renderComponent();
 
@@ -115,29 +149,35 @@ describe("LeadDetail", () => {
 
     await waitFor(() => {
       expect(api.delete).toHaveBeenCalledWith("/api/leads/1");
+      expect(mockNavigate).toHaveBeenCalledWith("/leads");
     });
   });
 
   it("submits a new follow-up successfully", async () => {
     const user = userEvent.setup();
-    vi.mocked(api.post).mockResolvedValueOnce({});
+    (api.post as Mock).mockResolvedValueOnce({});
 
-    renderComponent();
+    const { container } = renderComponent();
 
     await waitFor(() =>
-      expect(screen.getByPlaceholderText("Description")).toBeInTheDocument(),
+      expect(
+        screen.getByPlaceholderText("Task description..."),
+      ).toBeInTheDocument(),
     );
 
     await user.type(
-      screen.getByPlaceholderText("Description"),
+      screen.getByPlaceholderText("Task description..."),
       "Send contract",
     );
-    // Firing change event for datetime-local as userEvent typing can be tricky with specific browser implementations
-    fireEvent.change(screen.getByDisplayValue(""), {
-      target: { value: "2026-08-15T14:30" },
-    });
 
-    await user.click(screen.getByRole("button", { name: /Add Task/i }));
+    const dateInput = container.querySelector('input[type="datetime-local"]');
+    if (dateInput) {
+      fireEvent.change(dateInput, {
+        target: { value: "2026-08-15T14:30" },
+      });
+    }
+
+    await user.click(screen.getByRole("button", { name: /Schedule Task/i }));
 
     await waitFor(() => {
       expect(api.post).toHaveBeenCalledWith(

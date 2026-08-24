@@ -1,11 +1,25 @@
 import { render, screen, waitFor, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { vi, describe, it, expect, beforeEach } from "vitest";
+import { vi, describe, it, expect, beforeEach, type Mock } from "vitest";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { LeadForm } from "./LeadForm";
 import { api } from "@/services/api";
 
 vi.mock("@/services/api");
+
+vi.mock("@/context/AuthContext", () => ({
+  useAuth: vi.fn().mockReturnValue({ logout: vi.fn() }),
+}));
+
+vi.mock("@/components/SideBar", () => ({
+  Sidebar: () => <div data-testid="mock-sidebar">Sidebar</div>,
+}));
+
+const mockNavigate = vi.fn();
+vi.mock("react-router-dom", async () => {
+  const actual = await vi.importActual("react-router-dom");
+  return { ...actual, useNavigate: () => mockNavigate };
+});
 
 describe("LeadForm", () => {
   beforeEach(() => {
@@ -24,7 +38,7 @@ describe("LeadForm", () => {
   it("validates required fields on creation submit", async () => {
     renderForm();
 
-    fireEvent.click(screen.getByRole("button", { name: /Save Lead/i }));
+    fireEvent.click(screen.getByRole("button", { name: /Create Lead/i }));
 
     await waitFor(() => {
       expect(screen.getByText("Name is required")).toBeInTheDocument();
@@ -37,31 +51,23 @@ describe("LeadForm", () => {
 
   it("submits valid data to create a lead", async () => {
     const user = userEvent.setup();
-    vi.mocked(api.post).mockResolvedValueOnce({ data: {} });
+    (api.post as Mock).mockResolvedValueOnce({ data: {} });
 
-    // Extract the container from the render function
-    const { container } = renderForm();
+    renderForm();
 
-    // Query inputs directly by their form names instead of labels
-    const nameInput = container.querySelector(
-      'input[name="name"]',
-    ) as HTMLInputElement;
-    const phoneInput = container.querySelector(
-      'input[name="phone"]',
-    ) as HTMLInputElement;
-    const emailInput = container.querySelector(
-      'input[name="email"]',
-    ) as HTMLInputElement;
-    const sourceInput = container.querySelector(
-      'input[name="source"]',
-    ) as HTMLInputElement;
+    const nameInput = screen.getByPlaceholderText("e.g. Jane Doe");
+    const phoneInput = screen.getByPlaceholderText("+1 (555) 000-0000");
+    const emailInput = screen.getByPlaceholderText("jane@example.com");
+    const sourceInput = screen.getByPlaceholderText(
+      "Website, Social, Referral...",
+    );
 
     await user.type(nameInput, "John Doe");
     await user.type(phoneInput, "1234567890");
     await user.type(emailInput, "john@example.com");
     await user.type(sourceInput, "Website");
 
-    await user.click(screen.getByRole("button", { name: /Save Lead/i }));
+    await user.click(screen.getByRole("button", { name: /Create Lead/i }));
 
     await waitFor(() => {
       expect(api.post).toHaveBeenCalledWith(
@@ -73,11 +79,12 @@ describe("LeadForm", () => {
           source: "Website",
         }),
       );
+      expect(mockNavigate).toHaveBeenCalledWith("/leads");
     });
   });
 
   it("fetches lead data when in edit mode", async () => {
-    vi.mocked(api.get).mockResolvedValueOnce({
+    (api.get as Mock).mockResolvedValueOnce({
       data: {
         name: "Existing Lead",
         phone: "0987654321",
@@ -93,6 +100,9 @@ describe("LeadForm", () => {
     await waitFor(() => {
       expect(screen.getByDisplayValue("Existing Lead")).toBeInTheDocument();
       expect(screen.getByDisplayValue("0987654321")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: /Update Lead/i }),
+      ).toBeInTheDocument();
     });
   });
 });
