@@ -111,23 +111,20 @@ export const LeadConversations: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-50"
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-700 transition-colors hover:bg-gray-50"
             >
               &larr;
             </button>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl">
+              <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-3xl">
                 Conversations & AI Drafts
               </h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Review messages and approve AI-generated replies for this lead.
-              </p>
             </div>
           </motion.header>
 
           <motion.section
             variants={itemVariants}
-            className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm md:p-8"
+            className="rounded-xl border border-gray-100 bg-white"
           >
             {conversationError && (
               <div
@@ -148,9 +145,9 @@ export const LeadConversations: React.FC = () => {
                   <motion.article
                     variants={itemVariants}
                     key={message._id}
-                    className="rounded-xl border border-gray-100 bg-gray-50/30 p-6 shadow-sm"
+                    className="rounded-xl border border-gray-200 bg-gray-50/30 p-6"
                   >
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-100 pb-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-gray-200 pb-4">
                       <p className="text-sm font-bold capitalize tracking-wide text-gray-900">
                         {message.direction} Message
                       </p>
@@ -166,8 +163,8 @@ export const LeadConversations: React.FC = () => {
                     {message.ai_analysis && (
                       <div className="mt-6 rounded-lg border border-indigo-100 bg-indigo-50/50 p-5 text-sm text-indigo-900">
                         <div className="mb-3 flex items-center gap-2">
-                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-200 text-xs shadow-sm">
-                            ✨
+                          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-200 text-xs">
+                            ⟡
                           </span>
                           <span className="font-bold text-indigo-950">
                             AI Analysis
@@ -190,8 +187,8 @@ export const LeadConversations: React.FC = () => {
                         </p>
 
                         {message.ai_analysis.requires_human_escalation && (
-                          <div className="mt-4 inline-flex items-center gap-2 rounded-md border border-red-100 bg-red-50 px-3 py-1.5 text-xs font-bold text-red-800 shadow-sm">
-                            <span>⚠️</span> Human review required:{" "}
+                          <div className="mt-4 inline-flex items-center gap-2 rounded-md border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-800">
+                            Human review required:{" "}
                             <span className="font-medium">
                               {message.ai_analysis.escalation_reason}
                             </span>
@@ -213,7 +210,7 @@ export const LeadConversations: React.FC = () => {
                           value={message.reply_draft}
                           readOnly
                           rows={4}
-                          className="block w-full resize-none rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-800 shadow-sm focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          className="block w-full resize-none rounded-lg border border-gray-200 bg-white p-4 text-sm text-gray-800 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                         />
 
                         <div className="mt-4 flex flex-col sm:flex-row sm:justify-end">

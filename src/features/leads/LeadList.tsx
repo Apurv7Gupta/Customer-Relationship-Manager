@@ -215,7 +215,7 @@ export const LeadList: React.FC = () => {
                           <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
                             <Link
                               to={`/leads/${lead._id}`}
-                              className="inline-flex items-center font-medium text-indigo-600 transition-colors hover:text-indigo-800"
+                              className="inline-flex items-center font-medium text-blue-400 transition-colors hover:text-blue-500"
                             >
                               View Details{" "}
                               <span className="ml-1 text-lg leading-none">

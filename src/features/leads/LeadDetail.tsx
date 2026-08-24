@@ -158,7 +158,7 @@ export const LeadDetail: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition-colors hover:bg-gray-50"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 transition-colors hover:bg-gray-50 hover:cursor-pointer"
               >
                 &larr;
               </button>
@@ -191,7 +191,7 @@ export const LeadDetail: React.FC = () => {
               {/* Core Information Card */}
               <motion.section
                 variants={itemVariants}
-                className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
+                className="rounded-xl border border-gray-200 bg-white p-6"
               >
                 <h2 className="mb-6 text-lg font-bold text-gray-900">
                   Contact Details
@@ -222,7 +222,7 @@ export const LeadDetail: React.FC = () => {
                     <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
                       Change Status
                     </label>
-                    <div className="mt-2 flex rounded-lg shadow-sm">
+                    <div className="mt-2 flex rounded-lg">
                       <select
                         value={newStatus}
                         onChange={(e) => setNewStatus(e.target.value)}
@@ -241,7 +241,7 @@ export const LeadDetail: React.FC = () => {
                       </select>
                       <button
                         onClick={updateStatus}
-                        className="rounded-r-lg border border-transparent bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+                        className="rounded-r-lg bg-blue-300 px-4 py-2.5 text-sm font-medium text-gray-800 hover:bg-blue-400 hover:cursor-pointer"
                       >
                         Update
                       </button>
@@ -253,7 +253,7 @@ export const LeadDetail: React.FC = () => {
                       <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500">
                         Assign Lead
                       </label>
-                      <div className="mt-2 flex rounded-lg shadow-sm">
+                      <div className="mt-2 flex rounded-lg">
                         <select
                           value={newAssignee}
                           onChange={(e) => setNewAssignee(e.target.value)}
@@ -268,7 +268,7 @@ export const LeadDetail: React.FC = () => {
                         </select>
                         <button
                           onClick={updateAssignee}
-                          className="rounded-r-lg border border-transparent bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+                          className="rounded-r-lg bg-blue-300 px-4 py-2.5 text-sm font-medium text-gray-800 hover:bg-blue-400 hover:cursor-pointer"
                         >
                           Assign
                         </button>
@@ -281,7 +281,7 @@ export const LeadDetail: React.FC = () => {
               {/* Activity Timeline */}
               <motion.section
                 variants={itemVariants}
-                className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
+                className="rounded-xl border border-gray-200 bg-white p-6"
               >
                 <h3 className="mb-6 text-lg font-bold text-gray-900">
                   Activity Timeline
@@ -318,7 +318,7 @@ export const LeadDetail: React.FC = () => {
             <div className="space-y-6 lg:col-span-1">
               <motion.section
                 variants={itemVariants}
-                className="rounded-xl border border-gray-100 bg-white p-6 shadow-sm"
+                className="rounded-xl border border-gray-200 bg-white p-6"
               >
                 <h3 className="mb-6 text-lg font-bold text-gray-900">
                   Follow-ups
@@ -353,7 +353,7 @@ export const LeadDetail: React.FC = () => {
                   </div>
                   <button
                     type="submit"
-                    className="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-indigo-700"
+                    className="w-full rounded-lg bg-blue-300 px-4 py-2 text-sm font-medium text-black transition-colors hover:bg-blue-400 hover:cursor-pointer"
                   >
                     Schedule Task
                   </button>
@@ -369,7 +369,7 @@ export const LeadDetail: React.FC = () => {
                     followups.map((f) => (
                       <div
                         key={f._id}
-                        className="rounded-lg border border-gray-100 bg-white p-4 shadow-sm"
+                        className="rounded-lg border border-gray-200 bg-white p-4"
                       >
                         <p className="text-sm font-semibold text-gray-900">
                           {f.description}
@@ -407,9 +407,9 @@ export const LeadDetail: React.FC = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => navigate(`/leads/${id}/conversations`)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-indigo-100 bg-white px-6 py-4 text-sm font-bold text-indigo-700 shadow-sm transition-colors hover:border-indigo-200 hover:bg-indigo-50"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-indigo-100 bg-white px-6 py-4 text-sm font-bold text-indigo-400 transition-colors hover:border-yellow-300 hover:bg-white hover:cursor-pointer"
               >
-                <span>✨</span> View Conversations & AI Drafts
+                <span>⟡</span> View Conversations & AI Drafts
               </motion.button>
             </div>
           </div>

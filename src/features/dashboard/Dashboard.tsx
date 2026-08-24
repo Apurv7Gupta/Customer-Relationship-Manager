@@ -86,7 +86,7 @@ export const Dashboard: React.FC = () => {
             className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center"
           >
             <div className="flex items-center gap-3 sm:gap-4">
-              <button className="flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-700 md:hidden">
+              <button className="flex h-10 w-10 items-center justify-center rounded-full bg-red-600 text-white shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-700 md:hidden hover:cursor-pointer">
                 <LogoutIcon />
               </button>
               <h1 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
@@ -107,7 +107,7 @@ export const Dashboard: React.FC = () => {
               </button> */}
               <button
                 onClick={logout}
-                className="hidden ml-auto sm:flex items-center gap-2 rounded-lg bg-red-600 px-3 py-[5px] text-sm text-white shadow-sm transition-colors hover:bg-red-700 sm:ml-2"
+                className="hidden ml-auto sm:flex items-center gap-2 rounded-lg bg-red-600 px-3 py-[5px] text-sm text-white shadow-sm transition-colors hover:bg-red-700 sm:ml-2 hover:cursor-pointer"
               >
                 <LogoutIcon />
                 <span className="hidden sm:inline">Log Out</span>

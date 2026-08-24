@@ -98,7 +98,7 @@ export const LeadForm: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm hover:bg-gray-50"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:cursor-pointer"
             >
               &larr;
             </button>
@@ -109,7 +109,7 @@ export const LeadForm: React.FC = () => {
           <div className="flex items-center gap-3">
             <button
               onClick={logout}
-              className="hidden ml-auto sm:flex items-center gap-2 rounded-lg bg-red-600 px-3 py-[5px] text-sm text-white shadow-sm transition-colors hover:bg-red-700 sm:ml-2"
+              className="hidden ml-auto sm:flex items-center gap-2 rounded-lg bg-red-600 px-3 py-[5px] text-sm text-white transition-colors hover:bg-red-700 sm:ml-2"
             >
               <LogoutIcon />
               <span className="hidden sm:inline">Log Out</span>
@@ -117,9 +117,9 @@ export const LeadForm: React.FC = () => {
           </div>
         </header>
 
-        <div className="max-w-3xl rounded-xl border border-gray-100 bg-white p-8 shadow-sm">
+        <div className="max-w-3xl rounded-xl border border-gray-200 bg-white p-8">
           {globalError && (
-            <div className="mb-6 rounded-lg border border-red-100 bg-red-50 p-4 text-sm font-medium text-red-700">
+            <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-700">
               {globalError}
             </div>
           )}
@@ -198,14 +198,14 @@ export const LeadForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate(-1)}
-                className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
+                className="rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-medium text-white shadow hover:bg-indigo-700 disabled:opacity-50"
+                className="rounded-lg border border-gray-200 bg-blue-300 px-5 py-2.5 text-sm font-medium text-black hover:bg-blue-400 hover:cursor-pointer"
               >
                 {isSubmitting
                   ? "Saving..."
