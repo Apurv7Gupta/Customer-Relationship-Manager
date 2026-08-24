@@ -145,7 +145,7 @@ backend/
 
 #### Unit Tests
 
-![Unit_Tests](./Images/Unit_Test.png)
+![Unit_Tests](./Images/Unit_test.png)
 
 ### High Level Design
 
