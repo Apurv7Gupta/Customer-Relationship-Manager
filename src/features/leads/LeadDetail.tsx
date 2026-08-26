@@ -286,7 +286,7 @@ export const LeadDetail: React.FC = () => {
                 <h3 className="mb-6 text-lg font-bold text-gray-900">
                   Activity Timeline
                 </h3>
-                <div className="space-y-5">
+                <div className="space-y-5 max-h-96 overflow-y-auto pr-2">
                   {activities.length === 0 ? (
                     <p className="text-sm font-medium text-gray-500">
                       No activities logged yet.
@@ -295,9 +295,9 @@ export const LeadDetail: React.FC = () => {
                     activities.map((act) => (
                       <div
                         key={act._id}
-                        className="relative pl-6 before:absolute before:bottom-[-20px] before:left-0 before:top-1.5 before:w-[2px] before:bg-gray-100 last:before:hidden"
+                        className="relative pl-8 before:absolute before:bottom-[-20px] before:left-[5px] before:top-1.5 before:w-[2px] before:bg-gray-100 last:before:hidden"
                       >
-                        <div className="absolute left-[-5px] top-1.5 h-3 w-3 rounded-full border-2 border-white bg-indigo-500" />
+                        <div className="absolute left-0 top-1.5 h-3 w-3 rounded-full border-2 border-white bg-indigo-500" />
                         <p className="text-sm font-semibold capitalize text-gray-900">
                           {act.activity_type.replace("_", " ")}
                         </p>
